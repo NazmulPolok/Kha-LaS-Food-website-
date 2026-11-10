@@ -1,0 +1,389 @@
+/* ==========================================================
+   খাLaS - Modern Theme & Layout System (Dark & Light Mode)
+   ========================================================== */
+
+:root, [data-theme="dark"] {
+  --bg-main: #07192f;
+  --bg-header: #07192f;
+  --bg-surface: #0c233f;
+  --bg-surface-hover: #102d50;
+  --bg-input: #07192f;
+  --bg-modal: #07192f;
+  --border-main: #14355f;
+  --border-card: #16365f;
+  --border-strong: #1b3d6a;
+  --text-main: #ffffff;
+  --text-sub: #cbd5e1;
+  --text-muted: #94a3b8;
+  --brand: #f04e37;
+  --brand-hover: #ff5a43;
+  --chip-bg: #0c233f;
+  --chip-border: #173860;
+  --chip-text: #cbd5e1;
+  --scrollbar-track: #07192f;
+  --scrollbar-thumb: #17375e;
+}
+
+[data-theme="light"],
+html[data-theme="light"],
+body[data-theme="light"] {
+  --bg-main: #f8f6f2; /* Warm luxury off-white */
+  --bg-header: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #fff6f2; /* Soft warm orange tint */
+  --bg-input: #ffffff;
+  --bg-modal: #ffffff;
+  --border-main: #e6e0d6;
+  --border-card: #ece6dc;
+  --border-strong: #dad3c7;
+  --text-main: #0f172a; /* Deep slate / Charcoal */
+  --text-sub: #334155;
+  --text-muted: #64748b;
+  --brand: #f04e37;
+  --brand-hover: #e03b24;
+  --chip-bg: #ede7de;
+  --chip-border: #dad2c5;
+  --chip-text: #1e293b;
+  --scrollbar-track: #f1ede5;
+  --scrollbar-thumb: #d4cec3;
+}
+
+/* Base Body Transition */
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brand); }
+
+/* Detail Drawer */
+#detail {
+  transform: translateY(100%);
+  background: var(--bg-main);
+  border-color: var(--border-main);
+  color: var(--text-main);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (min-width: 768px) { #detail { transform: translateX(100%); } }
+#detail.open { transform: none; }
+
+/* Luxury Map Pins */
+.fh-pin {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 9px;
+  border-radius: 14px;
+  color: #ffffff !important;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45), 0 0 0 1.5px rgba(255, 255, 255, 0.2);
+  border: 1.5px solid #ffffff;
+  width: max-content;
+  transition: transform .18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .18s ease;
+  cursor: pointer;
+}
+.fh-pin * {
+  color: #ffffff !important;
+}
+.fh-pin:hover {
+  transform: translateY(-2px) scale(1.1);
+  box-shadow: 0 8px 18px rgba(240, 78, 55, 0.5);
+}
+.fh-pin.sel {
+  transform: scale(1.22);
+  outline: 2px solid #ffffff;
+  box-shadow: 0 0 20px rgba(240, 78, 55, 0.85) !important;
+  z-index: 1000 !important;
+}
+.fh-pin.unverified-pin {
+  border-style: dashed;
+}
+
+/* Chips & Badges */
+.chip {
+  border: 1px solid var(--chip-border);
+  border-radius: 9999px;
+  padding: 3px 12px;
+  font-size: 12px;
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  transition: all .15s ease;
+}
+.chip:hover {
+  border-color: var(--brand);
+  color: #ffffff !important;
+  background: var(--brand) !important;
+}
+.chip[aria-pressed="true"] {
+  background: var(--brand) !important;
+  border-color: var(--brand) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(240, 78, 55, 0.4);
+}
+
+/* Form controls focus */
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Map Section & Container Fix */
+#map {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  position: absolute;
+  inset: 0;
+}
+
+section.order-1 {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+}
+
+/* Leaflet Container Styling */
+.leaflet-container {
+  font: inherit;
+  background-color: var(--bg-main) !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+.leaflet-control-zoom a {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-strong) !important;
+  transition: all .15s ease;
+}
+.leaflet-control-zoom a:hover {
+  background-color: var(--brand) !important;
+  color: #ffffff !important;
+}
+.leaflet-control-attribution {
+  background: rgba(7, 25, 47, 0.75) !important;
+  color: #94a3b8 !important;
+}
+[data-theme="light"] .leaflet-control-attribution {
+  background: rgba(248, 246, 242, 0.85) !important;
+  color: #64748b !important;
+}
+.leaflet-control-attribution a {
+  color: var(--brand) !important;
+}
+
+.cursor-crosshair, .cursor-crosshair * { cursor: crosshair !important; }
+
+/* Keep White Text Utility for buttons & badges */
+.keep-white, .keep-white *, .bg-brand, .bg-brand * {
+  color: #ffffff !important;
+}
+
+/* ==========================================================
+   Collapsible Sidebar (Hide / Unhide with Smooth Transition)
+   ========================================================== */
+#sidebar {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease,
+              padding 0.3s ease,
+              border-width 0.3s ease;
+  will-change: width, height, opacity;
+}
+
+/* Collapsed Desktop */
+@media (min-width: 768px) {
+  #sidebar.collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-width: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Collapsed Mobile */
+@media (max-width: 767px) {
+  #sidebar.collapsed {
+    height: 0 !important;
+    max-height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-width: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+  }
+}
+
+/* ==========================================================
+   Light Mode Overrides (Warm Off-White + Crisp Slate + Orange)
+   ========================================================== */
+html[data-theme="light"],
+body[data-theme="light"],
+[data-theme="light"] body {
+  background-color: var(--bg-main) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] header {
+  background-color: var(--bg-header) !important;
+  border-color: var(--border-main) !important;
+}
+
+[data-theme="light"] aside,
+[data-theme="light"] #sidebar {
+  background-color: var(--bg-main) !important;
+  border-color: var(--border-main) !important;
+}
+
+[data-theme="light"] #detail {
+  background-color: var(--bg-header) !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] #detail .sticky {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: var(--border-main) !important;
+}
+
+/* Surfaces and cards in light mode */
+[data-theme="light"] .bg-\[\#0c233f\] {
+  background-color: var(--bg-surface) !important;
+}
+
+[data-theme="light"] .bg-\[\#07192f\] {
+  background-color: var(--bg-main) !important;
+}
+
+[data-theme="light"] .bg-\[\#07192f\]\/95 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .bg-\[\#102d50\] {
+  background-color: var(--bg-surface-hover) !important;
+}
+
+/* Borders in light mode */
+[data-theme="light"] .border-\[\#14355f\] {
+  border-color: var(--border-main) !important;
+}
+
+[data-theme="light"] .border-\[\#16365f\] {
+  border-color: var(--border-card) !important;
+}
+
+[data-theme="light"] .border-\[\#1b3d6a\] {
+  border-color: var(--border-strong) !important;
+}
+
+[data-theme="light"] .border-\[\#183a64\] {
+  border-color: var(--border-strong) !important;
+}
+
+/* Typography in light mode */
+[data-theme="light"] .text-white:not(.keep-white) {
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] .text-slate-100 {
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] .text-slate-200 {
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .text-slate-300 {
+  color: var(--text-sub) !important;
+}
+
+[data-theme="light"] .text-slate-400 {
+  color: var(--text-muted) !important;
+}
+
+/* Buttons in header & map */
+[data-theme="light"] #btn-sidebar-toggle {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
+[data-theme="light"] #btn-sidebar-toggle:hover {
+  color: var(--brand) !important;
+  border-color: var(--brand) !important;
+}
+
+[data-theme="light"] #btn-theme-toggle {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
+[data-theme="light"] #btn-theme-toggle:hover {
+  color: var(--brand) !important;
+  border-color: var(--brand) !important;
+}
+
+[data-theme="light"] #btn-floating-sidebar {
+  background-color: #ffffff !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
+
+/* Modal Dialog in light mode */
+[data-theme="light"] #modal > div {
+  background-color: #ffffff !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Toast */
+[data-theme="light"] #toast {
+  background-color: #ffffff !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Form Inputs in light mode */
+[data-theme="light"] input:not([type="range"]):not([type="checkbox"]):not([type="file"]),
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background-color: #ffffff !important;
+  border-color: var(--border-strong) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Interactive chips in light mode */
+[data-theme="light"] .chip {
+  background: var(--chip-bg) !important;
+  border-color: var(--chip-border) !important;
+  color: var(--chip-text) !important;
+}
+
+[data-theme="light"] .chip:hover {
+  background: #fff0eb !important;
+  border-color: var(--brand) !important;
+  color: var(--brand) !important;
+}
+
+[data-theme="light"] .chip[aria-pressed="true"] {
+  background: var(--brand) !important;
+  border-color: var(--brand) !important;
+  color: #ffffff !important;
+}

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>খাLaS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/css/tailwind.config.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="h-screen flex flex-col overflow-hidden bg-[#07192f] text-slate-100 selection:bg-brand selection:text-white" data-theme="dark">
+<header class="bg-[#07192f] border-b border-[#14355f] px-3 md:px-4 py-2 flex items-center justify-between gap-2.5 md:gap-3 shadow-md z-20">
+  <div class="flex items-center gap-2 md:gap-3">
+    <!-- 3-line Hamburger Menu Button matching uploaded image -->
+    <button id="btn-sidebar-toggle" type="button" class="w-9 h-9 rounded-xl flex items-center justify-center border border-[#14355f] bg-[#0c233f] text-white hover:text-brand hover:border-brand transition shadow-sm" title="Toggle Spots Sidebar" aria-label="Toggle Spots Sidebar" aria-expanded="false">
+      <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="2.5" y="4" width="19" height="3" rx="1.5" />
+        <rect x="2.5" y="10.5" width="19" height="3" rx="1.5" />
+        <rect x="2.5" y="17" width="19" height="3" rx="1.5" />
+      </svg>
+    </button>
+
+    <div class="flex items-center gap-2 cursor-pointer group" onclick="location.reload()">
+      <div class="w-9 h-9 rounded-xl bg-brand text-white keep-white flex items-center justify-center shadow-lg shadow-brand/30 group-hover:scale-105 transition">
+        <i class="fa-solid fa-bowl-food text-lg" aria-hidden="true"></i>
+      </div>
+      <div>
+        <h1 class="font-black text-xl md:text-2xl leading-tight text-white tracking-tight">খাLaS</h1>
+        <p class="text-[10px] md:text-[11px] text-slate-400 -mt-0.5 hidden sm:block font-medium">খাবারের খোঁজ? ব্যস, খাLaS!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-2 md:gap-3">
+    <!-- Light & Dark Mode Toggle Switcher -->
+    <button id="btn-theme-toggle" type="button" class="flex items-center gap-1.5 border border-[#14355f] bg-[#0c233f] text-slate-200 hover:text-brand hover:border-brand text-xs font-semibold px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl transition shadow-sm" title="Switch Theme (Dark / Light)" aria-label="Switch Theme">
+      <span id="theme-toggle-icon">🌙</span>
+      <span id="theme-toggle-text" class="hidden sm:inline">Dark</span>
+    </button>
+
+    <button id="btn-add-spot" type="button" class="flex items-center gap-1.5 bg-brand hover:bg-brand-hover active:scale-95 text-white keep-white text-xs md:text-sm font-bold px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl shadow-lg shadow-brand/25 transition">
+      <i class="fa-solid fa-plus-circle"></i>
+      <span>Add Spot</span>
+    </button>
+
+    <div id="auth-header" class="flex items-center"></div>
+    <span id="count" class="text-xs md:text-sm font-semibold text-slate-300 border-l border-[#14355f] pl-2.5 hidden sm:inline" aria-live="polite"></span>
+  </div>
+</header>
+
+<main class="flex-1 min-h-0 flex flex-col md:flex-row relative overflow-hidden" style="height: calc(100vh - 56px);">
+  <!-- Collapsible Spots & Filters Sidebar (Default: Collapsed as requested) -->
+  <aside id="sidebar" class="collapsed order-2 md:order-1 h-[45vh] md:h-auto md:w-96 shrink-0 overflow-y-auto bg-[#07192f] border-t md:border-t-0 md:border-r border-[#14355f] p-3 space-y-3 z-10">
+    <div id="filters" class="space-y-2.5"></div>
+    <div class="flex items-center justify-between text-xs text-slate-400 pt-1 border-t border-[#14355f]/60" aria-label="Rating colors">
+      <div class="flex items-center gap-2.5">
+        <span><i class="fa-solid fa-circle" style="color:#059669"></i> 9.0+</span>
+        <span><i class="fa-solid fa-circle" style="color:#84cc16"></i> 7.5+</span>
+        <span><i class="fa-solid fa-circle" style="color:#eab308"></i> 5.5+</span>
+        <span><i class="fa-solid fa-circle" style="color:#f04e37"></i> &lt;5.5</span>
+      </div>
+      <div class="text-[11px] text-emerald-400 font-semibold">
+        <i class="fa-solid fa-certificate text-emerald-400"></i> 25+ = Verified
+      </div>
+    </div>
+    <ul id="list" class="space-y-2"></ul>
+  </aside>
+
+  <section class="order-1 md:order-2 flex-1 min-h-0 relative" style="min-height: 300px;">
+    <!-- Floating Quick Unhide Button on Map -->
+    <button id="btn-floating-sidebar" type="button" class="absolute top-3 left-3 z-[1000] flex items-center gap-2 bg-[#0c233f] border border-[#14355f] text-white hover:text-brand hover:border-brand px-3 py-2 rounded-xl text-xs font-bold shadow-2xl transition active:scale-95 group" title="Toggle Spots Panel">
+      <svg class="w-4 h-4 text-brand pointer-events-none group-hover:scale-110 transition" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="2.5" y="4" width="19" height="3" rx="1.5" />
+        <rect x="2.5" y="10.5" width="19" height="3" rx="1.5" />
+        <rect x="2.5" y="17" width="19" height="3" rx="1.5" />
+      </svg>
+      <span id="floating-btn-label">Show Food Spots</span>
+      <span id="floating-count-badge" class="bg-brand text-white keep-white px-1.5 py-0.2 rounded-full text-[10px] ml-0.5"></span>
+    </button>
+
+    <div id="map" class="absolute inset-0" role="application" aria-label="Food map"></div>
+  </section>
+</main>
+
+<section id="detail" class="fixed z-[1500] bg-[#07192f] shadow-2xl transition-transform duration-300 overflow-y-auto inset-x-0 bottom-0 max-h-[88vh] rounded-t-2xl md:inset-y-0 md:left-auto md:right-0 md:w-[430px] md:max-h-none md:rounded-none border-t md:border-t-0 md:border-l border-[#14355f]" aria-label="Spot details"></section>
+<div id="modal" class="hidden fixed inset-0 z-[2000] bg-black/75 backdrop-blur-sm items-center justify-center p-4"></div>
+<div id="toast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-[3000] bg-[#0c233f] border border-[#1b4376] text-white text-sm font-semibold px-4 py-2.5 rounded-full shadow-2xl" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/map.js?v=2"></script>
+<script src="assets/js/filters.js"></script>
+<script src="assets/js/booking.js"></script>
+<script src="assets/js/delivery.js"></script>
+<script src="assets/js/community.js"></script>
+<script src="assets/js/gallery.js"></script>
+<script src="assets/js/spot-modal.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

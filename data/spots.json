@@ -1,0 +1,188 @@
+[
+ {
+  "id": "s1",
+  "name": "Old Dhaka Kacchi House",
+  "lat": 23.719,
+  "lng": 90.41,
+  "food": [
+   "Kacchi",
+   "Biryani"
+  ],
+  "type": "Indoor",
+  "rating": 9.2,
+  "reviews": 1240,
+  "price": "৳৳",
+  "token": 150,
+  "delivery": "both",
+  "status": "open",
+  "phone": "+8801700000001",
+  "about": "Slow-cooked kacchi served in clay pots. Expect a queue at lunch.",
+  "foodpanda": "https://www.foodpanda.com.bd/",
+  "pathao": "https://pathao.com/bn/food/"
+ },
+ {
+  "id": "s2",
+  "name": "Skyline Rooftop Grill",
+  "lat": 23.793,
+  "lng": 90.414,
+  "food": [
+   "Kabab",
+   "Arabic"
+  ],
+  "type": "Rooftop",
+  "rating": 8.4,
+  "reviews": 310,
+  "price": "৳৳৳৳",
+  "token": 500,
+  "delivery": "vendor",
+  "status": "open",
+  "phone": "+8801700000002",
+  "about": "Charcoal grills with a view over the lake.",
+  "foodpanda": "https://www.foodpanda.com.bd/",
+  "pathao": "https://pathao.com/bn/food/"
+ },
+ {
+  "id": "s3",
+  "name": "Lakeside Fuchka Cart",
+  "lat": 23.746,
+  "lng": 90.376,
+  "food": [
+   "Deshi"
+  ],
+  "type": "Food Cart",
+  "rating": 8.9,
+  "reviews": 860,
+  "price": "৳",
+  "token": 0,
+  "delivery": "none",
+  "status": "open",
+  "phone": "",
+  "about": "Fuchka and chotpoti by the lake, evenings only.",
+  "foodpanda": "https://www.foodpanda.com.bd/",
+  "pathao": "https://pathao.com/bn/food/"
+ },
+ {
+  "id": "s4",
+  "name": "Banani Thai Garden",
+  "lat": 23.7935,
+  "lng": 90.4025,
+  "food": [
+   "Thai"
+  ],
+  "type": "Outdoor",
+  "rating": 7.8,
+  "reviews": 190,
+  "price": "৳৳৳",
+  "token": 300,
+  "delivery": "aggregator",
+  "status": "busy",
+  "phone": "",
+  "about": "Garden seating, tom yum and pad thai.",
+  "foodpanda": "https://www.foodpanda.com.bd/",
+  "pathao": "https://pathao.com/bn/food/"
+ },
+ {
+  "id": "s5",
+  "name": "Mohammadpur Kabab Hub",
+  "lat": 23.758,
+  "lng": 90.36,
+  "food": [
+   "Kabab",
+   "Turkish"
+  ],
+  "type": "Indoor",
+  "rating": 7.1,
+  "reviews": 402,
+  "price": "৳৳",
+  "token": 200,
+  "delivery": "both",
+  "status": "open",
+  "phone": "+8801700000005",
+  "about": "Seekh, shami and Turkish-style wraps.",
+  "foodpanda": "https://www.foodpanda.com.bd/",
+  "pathao": "https://pathao.com/bn/food/"
+ },
+ {
+  "id": "s6",
+  "name": "Dragon Wok Uttara",
+  "lat": 23.874,
+  "lng": 90.399,
+  "food": [
+   "Chinese",
+   "Malay"
+  ],
+  "type": "Buffet",
+  "rating": 6.4,
+  "reviews": 145,
+  "price": "৳৳",
+  "token": 250,
+  "delivery": "aggregator",
+  "status": "open",
+  "phone": "",
+  "about": "Lunch and dinner buffet, mixed reviews on freshness.",
+  "foodpanda": "https://www.foodpanda.com.bd/",
+  "pathao": "https://pathao.com/bn/food/"
+ },
+ {
+  "id": "s7",
+  "name": "Tejgaon Street Burger",
+  "lat": 23.765,
+  "lng": 90.392,
+  "food": [
+   "Fast Food"
+  ],
+  "type": "Street Food",
+  "rating": 5,
+  "reviews": 77,
+  "price": "৳",
+  "token": 0,
+  "delivery": "vendor",
+  "status": "closed",
+  "phone": "+8801700000007",
+  "about": "Late-night burgers from a roadside stall.",
+  "foodpanda": "https://www.foodpanda.com.bd/",
+  "pathao": "https://pathao.com/bn/food/"
+ },
+ {
+  "id": "s8",
+  "name": "Cafe Mehfil Dhanmondi",
+  "lat": 23.739,
+  "lng": 90.375,
+  "food": [
+   "Indian",
+   "Deshi"
+  ],
+  "type": "Cafe",
+  "rating": 9.4,
+  "reviews": 530,
+  "price": "৳৳৳",
+  "token": 200,
+  "delivery": "aggregator",
+  "status": "open",
+  "phone": "",
+  "about": "Chai, kebabs and thali in a quiet courtyard.",
+  "foodpanda": "https://www.foodpanda.com.bd/",
+  "pathao": "https://pathao.com/bn/food/"
+ },
+ {
+  "id": "s9",
+  "name": "Maple Fine Dining",
+  "lat": 23.781,
+  "lng": 90.417,
+  "food": [
+   "Arabic",
+   "Indian"
+  ],
+  "type": "Fine Dining",
+  "rating": 9,
+  "reviews": 88,
+  "price": "৳৳৳৳",
+  "token": 1000,
+  "delivery": "none",
+  "status": "open",
+  "phone": "",
+  "about": "Tasting menus. Book ahead.",
+  "foodpanda": "https://www.foodpanda.com.bd/",
+  "pathao": "https://pathao.com/bn/food/"
+ }
+]

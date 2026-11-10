@@ -1,0 +1,25 @@
+{
+ "food": [
+  "Kabab",
+  "Biryani",
+  "Kacchi",
+  "Fast Food",
+  "Deshi",
+  "Indian",
+  "Thai",
+  "Chinese",
+  "Turkish",
+  "Malay",
+  "Arabic"
+ ],
+ "types": [
+  "Indoor",
+  "Outdoor",
+  "Rooftop",
+  "Street Food",
+  "Food Cart",
+  "Buffet",
+  "Fine Dining",
+  "Cafe"
+ ]
+}
