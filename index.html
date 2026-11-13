@@ -2,13 +2,21 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>খাLaS</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="খাLaS — discover unlisted roadside food carts near you, check live Open/Closed status, read hygiene reviews, and help local sellers get more customers.">
+<meta name="theme-color" content="#07192f">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/images/icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/images/icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="খাLaS">
+<title>খাLaS — Find the cart. Feed the street.</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="assets/css/tailwind.config.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/styles.css?v=4">
 </head>
 <body class="h-screen flex flex-col overflow-hidden bg-[#07192f] text-slate-100 selection:bg-brand selection:text-white" data-theme="dark">
 <header class="bg-[#07192f] border-b border-[#14355f] px-3 md:px-4 py-2 flex items-center justify-between gap-2.5 md:gap-3 shadow-md z-20">
@@ -40,7 +48,7 @@
       <span id="theme-toggle-text" class="hidden sm:inline">Dark</span>
     </button>
 
-    <button id="btn-add-spot" type="button" class="flex items-center gap-1.5 bg-brand hover:bg-brand-hover active:scale-95 text-white keep-white text-xs md:text-sm font-bold px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl shadow-lg shadow-brand/25 transition">
+    <button id="btn-add-spot" type="button" title="Add a new food spot" class="flex items-center gap-1.5 bg-brand hover:bg-brand-hover active:scale-95 text-white keep-white text-xs md:text-sm font-bold px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl shadow-lg shadow-brand/25 transition">
       <i class="fa-solid fa-plus-circle"></i>
       <span>Add Spot</span>
     </button>
@@ -80,7 +88,37 @@
       <span id="floating-count-badge" class="bg-brand text-white keep-white px-1.5 py-0.2 rounded-full text-[10px] ml-0.5"></span>
     </button>
 
+    <!-- Floating map actions: geolocation + crowdsourced quick add -->
+    <div id="map-actions" class="absolute bottom-5 right-3 z-[1000] flex flex-col items-end gap-2">
+      <button id="btn-find-near" type="button" class="flex items-center gap-2 bg-[#0c233f] border border-[#14355f] text-white hover:text-brand hover:border-brand px-3 py-2.5 rounded-xl text-xs font-bold shadow-2xl transition active:scale-95 disabled:cursor-wait" title="Find food carts near my current location">
+        <i class="fa-solid fa-crosshairs text-brand"></i>
+        <span data-near-label>Find Near Me</span>
+      </button>
+      <button id="btn-quick-add" type="button" class="flex items-center gap-2 bg-brand hover:bg-brand-hover text-white keep-white px-3 py-2.5 rounded-xl text-xs font-bold shadow-2xl shadow-brand/25 transition active:scale-95" title="Add a newly discovered roadside cart">
+        <i class="fa-solid fa-plus-circle"></i>
+        <span>Add Cart</span>
+      </button>
+    </div>
+
     <div id="map" class="absolute inset-0" role="application" aria-label="Food map"></div>
+
+    <!-- Route summary: shown after "Directions from my location" -->
+    <div id="route-panel" class="hidden absolute top-20 left-3 z-[1000] w-[calc(100%-1.5rem)] max-w-[300px] bg-[#0c233f] border border-[#14355f] rounded-xl shadow-2xl p-3 space-y-2" role="status" aria-live="polite">
+      <div class="flex items-start justify-between gap-2">
+        <div class="min-w-0">
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-diamond-turn-right text-brand"></i> Directions
+          </div>
+          <h3 id="route-title" class="text-sm font-bold text-white truncate">Route</h3>
+        </div>
+        <button id="route-close" type="button" class="text-slate-400 hover:text-white text-xl leading-none px-1 -mt-0.5" aria-label="Close directions" title="Clear route">&times;</button>
+      </div>
+      <div id="route-summary" class="text-xs font-bold text-emerald-300"></div>
+      <p id="route-note" class="text-[10px] text-slate-500 leading-snug"></p>
+      <a id="route-google" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand hover:text-brand-hover">
+        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Open turn-by-turn in Google Maps
+      </a>
+    </div>
   </section>
 </main>
 
@@ -89,16 +127,25 @@
 <div id="toast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-[3000] bg-[#0c233f] border border-[#1b4376] text-white text-sm font-semibold px-4 py-2.5 rounded-full shadow-2xl" role="status"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="assets/js/config.js"></script>
 <script src="assets/js/store.js"></script>
+<script src="assets/js/db.js"></script>
+<script src="assets/js/map-engine.js?v=4"></script>
 <script src="assets/js/theme.js"></script>
 <script src="assets/js/auth.js"></script>
-<script src="assets/js/map.js?v=2"></script>
+<script src="assets/js/map.js?v=5"></script>
+<script src="assets/js/directions.js?v=3"></script>
 <script src="assets/js/filters.js"></script>
 <script src="assets/js/booking.js"></script>
 <script src="assets/js/delivery.js"></script>
 <script src="assets/js/community.js"></script>
 <script src="assets/js/gallery.js"></script>
-<script src="assets/js/spot-modal.js"></script>
-<script src="assets/js/app.js"></script>
+<script src="assets/js/status.js"></script>
+<script src="assets/js/reviews.js"></script>
+<script src="assets/js/qr.js"></script>
+<script src="assets/js/crowdsource.js"></script>
+<script src="assets/js/pwa.js"></script>
+<script src="assets/js/spot-modal.js?v=3"></script>
+<script src="assets/js/app.js?v=6"></script>
 </body>
 </html>

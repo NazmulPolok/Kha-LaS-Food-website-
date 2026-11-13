@@ -1,6 +1,7 @@
 (function () {
   const $ = s => document.querySelector(s);
   let pickerMap = null;
+  let pickerCounter = 0;
 
   const BANGLADESH_AREAS = [
     { name: '-- Quick Jump to Area (Bangladesh) --', lat: '', lng: '', zoom: 12 },
@@ -306,118 +307,113 @@
       $('#add-spot-close').onclick = closeSelf;
       m.onclick = e => { if (e.target === m) closeSelf(); };
 
-      // Initialize Interactive Picker Map
+      // Initialize Interactive Picker Map (Mapbox when configured, Leaflet fallback)
+      const pickerSeq = ++pickerCounter;
       setTimeout(() => {
         const mapContainer = document.getElementById('spot-picker-map');
         if (!mapContainer) return;
 
-        pickerMap = L.map('spot-picker-map').setView([currentLat, currentLng], 15);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-          attribution: '&copy; OpenStreetMap contributors',
-          maxZoom: 19
-        }).addTo(pickerMap);
-
-        // Custom high-visibility draggable pin icon
-        const pinIcon = L.divIcon({
-          className: '',
-          iconSize: [42, 50],
-          iconAnchor: [21, 48],
-          html: `
-            <div class="relative flex flex-col items-center cursor-grab active:cursor-grabbing">
-              <div class="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center shadow-xl border-2 border-white ring-4 ring-orange-400/50">
-                <i class="fa-solid fa-location-dot text-lg"></i>
-              </div>
-              <div class="w-2.5 h-2.5 bg-brand rotate-45 -mt-1.5 border-r border-b border-white"></div>
-              <div class="w-5 h-2 bg-black/40 rounded-full blur-[1.5px] mt-0.5"></div>
-            </div>
-          `
-        });
-
-        const marker = L.marker([currentLat, currentLng], {
-          icon: pinIcon,
-          draggable: true,
-          title: 'Drag me to the exact spot!'
-        }).addTo(pickerMap);
-
-        marker.bindPopup('<b class="text-xs">📍 Drag this pin</b><br><span class="text-[11px] text-gray-500">to the exact restaurant building</span>').openPopup();
-
-        const updateCoords = (lat, lng) => {
-          currentLat = lat;
-          currentLng = lng;
-          $('#new-spot-lat').value = lat.toFixed(5);
-          $('#new-spot-lng').value = lng.toFixed(5);
-          const badge = $('#picker-coords-badge');
-          if (badge) badge.textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-        };
-
-        // Dragging listener
-        marker.on('drag', e => {
-          const pos = e.target.getLatLng();
-          updateCoords(pos.lat, pos.lng);
-        });
-
-        marker.on('dragend', e => {
-          const pos = e.target.getLatLng();
-          updateCoords(pos.lat, pos.lng);
-          pickerMap.panTo(pos);
-        });
-
-        // Clicking on map moves the pin immediately
-        pickerMap.on('click', e => {
-          marker.setLatLng(e.latlng);
-          updateCoords(e.latlng.lat, e.latlng.lng);
-        });
-
-        // Area Presets
-        $('#new-spot-area').onchange = e => {
-          const idx = +e.target.value;
-          const item = BANGLADESH_AREAS[idx];
-          if (item && item.lat) {
-            pickerMap.flyTo([item.lat, item.lng], item.zoom || 16);
-            marker.setLatLng([item.lat, item.lng]);
-            updateCoords(item.lat, item.lng);
+        FH.mapEngine.create('spot-picker-map', {
+          center: [currentLng, currentLat],
+          zoom: 15,
+          theme: (FH.theme && FH.theme.get()) || 'dark',
+          controls: true
+        }).then(api => {
+          if (pickerSeq !== pickerCounter || !document.getElementById('spot-picker-map')) {
+            api.remove();
+            return;
           }
-        };
+          pickerMap = api;
 
-        // Manual Lat/Lng input typing moves pin
-        const syncManualInput = () => {
-          const latVal = parseFloat($('#new-spot-lat').value);
-          const lngVal = parseFloat($('#new-spot-lng').value);
-          if (!isNaN(latVal) && !isNaN(lngVal)) {
-            marker.setLatLng([latVal, lngVal]);
-            pickerMap.panTo([latVal, lngVal]);
+          const marker = api.addMarker({
+            lat: currentLat,
+            lng: currentLng,
+            html: `
+              <div class="fh-picker-pin">
+                <div class="fh-picker-pin-head"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="fh-picker-pin-tail"></div>
+                <div class="fh-picker-pin-shadow"></div>
+              </div>`,
+            iconSize: [42, 54],
+            anchor: 'bottom',
+            draggable: true,
+            title: 'Drag me to the exact spot!',
+            onDrag: p => updatePickerCoords(p.lat, p.lng),
+            onDragEnd: p => {
+              updatePickerCoords(p.lat, p.lng);
+              api.panTo(p.lat, p.lng);
+            }
+          });
+
+          const updatePickerCoords = (lat, lng) => {
+            currentLat = lat;
+            currentLng = lng;
+            $('#new-spot-lat').value = lat.toFixed(5);
+            $('#new-spot-lng').value = lng.toFixed(5);
             const badge = $('#picker-coords-badge');
-            if (badge) badge.textContent = `📍 ${latVal.toFixed(5)}, ${lngVal.toFixed(5)}`;
-          }
-        };
+            if (badge) badge.textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+          };
 
-        $('#new-spot-lat').oninput = syncManualInput;
-        $('#new-spot-lng').oninput = syncManualInput;
+          // Clicking on map moves the pin immediately
+          api.onClick(p => {
+            marker.setLatLng(p.lat, p.lng);
+            updatePickerCoords(p.lat, p.lng);
+          });
 
-        // GPS Detect
-        $('#btn-use-gps').onclick = () => {
-          if ('geolocation' in navigator) {
-            FH.toast('Detecting your GPS location...');
-            navigator.geolocation.getCurrentPosition(
-              pos => {
-                const lat = pos.coords.latitude;
-                const lng = pos.coords.longitude;
-                pickerMap.flyTo([lat, lng], 17);
-                marker.setLatLng([lat, lng]);
-                updateCoords(lat, lng);
-                FH.toast('Pin placed at your current location!');
-              },
-              err => {
-                FH.toast('Could not access GPS. Please drag the pin manually.');
-              },
-              { enableHighAccuracy: true, timeout: 8000 }
-            );
-          } else {
-            FH.toast('Geolocation is not supported by your browser.');
-          }
-        };
+          // Area Presets
+          $('#new-spot-area').onchange = e => {
+            const idx = +e.target.value;
+            const item = BANGLADESH_AREAS[idx];
+            if (item && item.lat) {
+              api.flyTo(item.lat, item.lng, item.zoom || 16);
+              marker.setLatLng(item.lat, item.lng);
+              updatePickerCoords(item.lat, item.lng);
+            }
+          };
 
-        pickerMap.invalidateSize();
+          // Manual Lat/Lng input typing moves pin
+          const syncManualInput = () => {
+            const latVal = parseFloat($('#new-spot-lat').value);
+            const lngVal = parseFloat($('#new-spot-lng').value);
+            if (!isNaN(latVal) && !isNaN(lngVal)) {
+              marker.setLatLng(latVal, lngVal);
+              api.panTo(latVal, lngVal);
+              const badge = $('#picker-coords-badge');
+              if (badge) badge.textContent = `📍 ${latVal.toFixed(5)}, ${lngVal.toFixed(5)}`;
+            }
+          };
+
+          $('#new-spot-lat').oninput = syncManualInput;
+          $('#new-spot-lng').oninput = syncManualInput;
+
+          // GPS Detect
+          $('#btn-use-gps').onclick = () => {
+            if ('geolocation' in navigator) {
+              FH.toast('Detecting your GPS location...');
+              navigator.geolocation.getCurrentPosition(
+                pos => {
+                  const lat = pos.coords.latitude;
+                  const lng = pos.coords.longitude;
+                  api.flyTo(lat, lng, 17);
+                  marker.setLatLng(lat, lng);
+                  updatePickerCoords(lat, lng);
+                  FH.toast('Pin placed at your current location!');
+                },
+                () => {
+                  FH.toast('Could not access GPS. Please drag the pin manually.');
+                },
+                { enableHighAccuracy: true, timeout: 8000 }
+              );
+            } else {
+              FH.toast('Geolocation is not supported by your browser.');
+            }
+          };
+
+          api.invalidateSize();
+        }).catch(err => {
+          console.warn('[FH.spotModal] Picker map failed:', err);
+          FH.toast('Location picker could not load. You can still type coordinates below.');
+        });
       }, 250);
 
       // Photo rendering helper
@@ -693,6 +689,9 @@
                       <button type="button" data-edit-id="${s.id}" class="text-xs bg-brand hover:bg-brand-hover text-white px-2.5 py-1.5 rounded-lg font-medium shadow-md shadow-brand/20 transition" title="Edit this spot">
                         <i class="fa-solid fa-pen-to-square"></i> Edit
                       </button>
+                      <button type="button" data-qr-id="${s.id}" class="text-xs bg-[#07192f] hover:bg-[#102d50] text-slate-200 px-2 py-1.5 rounded-lg border border-[#1b3d6a] font-medium transition" title="Vendor QR code">
+                        <i class="fa-solid fa-qrcode"></i>
+                      </button>
                       <button type="button" data-del-id="${s.id}" class="text-xs bg-red-950/50 hover:bg-red-900/60 text-red-300 px-2 py-1.5 rounded-lg border border-red-500/30 font-medium transition" title="Delete spot">
                         <i class="fa-solid fa-trash-can"></i>
                       </button>
@@ -739,6 +738,14 @@
             FH.closeModal();
             FH.spotModal.open(s);
           }
+        };
+      });
+
+      // Vendor QR handlers
+      m.querySelectorAll('[data-qr-id]').forEach(btn => {
+        btn.onclick = () => {
+          const s = FH.store.get(btn.dataset.qrId);
+          if (s) FH.qr.open(s);
         };
       });
 

@@ -171,13 +171,14 @@
             <!-- My Spots Button showing how many spots this user has added -->
             <button id="btn-my-spots-header" type="button" class="flex items-center gap-1.5 bg-[#0c233f] hover:bg-[#102d50] border border-[#1b3d6a] hover:border-brand text-white text-xs font-semibold px-2.5 py-1.5 rounded-xl transition shadow-sm" title="View all ${myCount} spot(s) added by you">
               <i class="fa-solid fa-list-check"></i>
-              <span>My Spots <b class="bg-brand text-white px-1.5 py-0.2 rounded-full text-[10px] ml-0.5">${myCount}</b></span>
+              <span class="hidden sm:inline">My Spots</span>
+              <b class="bg-brand text-white px-1.5 py-0.2 rounded-full text-[10px] ml-0.5">${myCount}</b>
             </button>
 
             <!-- User profile avatar/button -->
-            <button id="btn-user-profile" type="button" class="flex items-center gap-2 bg-[#0c233f] hover:bg-[#102d50] border border-[#1b3d6a] rounded-full py-1 pl-1 pr-3 text-xs transition" title="Signed in as ${FH.esc(user.email)} (Click to switch account)">
+            <button id="btn-user-profile" type="button" class="flex items-center gap-2 bg-[#0c233f] hover:bg-[#102d50] border border-[#1b3d6a] rounded-full py-1 pl-1 pr-2 sm:pr-3 text-xs transition" title="Signed in as ${FH.esc(user.email)} (Click to switch account)">
               <span class="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center font-bold text-xs shadow-sm">${initials}</span>
-              <span class="font-medium text-slate-200 max-w-[90px] sm:max-w-[140px] truncate">${FH.esc(user.email)}</span>
+              <span class="hidden sm:inline font-medium text-slate-200 max-w-[90px] sm:max-w-[140px] truncate">${FH.esc(user.email)}</span>
             </button>
 
             <button id="btn-logout" type="button" title="Sign Out" class="text-slate-400 hover:text-brand text-sm p-1.5 transition">

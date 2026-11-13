@@ -172,6 +172,53 @@ FH.SEED = [
       this.select(spot.id);
       this.emit();
     },
+    setStatus(id, status, by) {
+      const s = this.get(id);
+      if (!s) return false;
+      s.status = status === 'closed' ? 'closed' : 'open';
+      s.statusUpdatedAt = Date.now();
+      if (by) s.statusUpdatedBy = by;
+      this.save();
+      this.emit();
+      return true;
+    },
+    /**
+     * Merge carts fetched from Supabase (initial load + realtime updates).
+     * Local-only fields (confirmations/photos) are protected when the remote
+     * row has not populated them yet.
+     */
+    mergeRemote(list) {
+      if (!Array.isArray(list) || !list.length) return;
+      const byId = new Map(S.spots.map(s => [s.id, s]));
+
+      list.forEach(remote => {
+        if (!remote || !remote.id) return;
+        const existing = byId.get(remote.id);
+
+        if (existing) {
+          const localPhotos = existing.photos;
+          const localFood = existing.food;
+          const localConfirmations = existing.confirmations;
+
+          Object.assign(existing, remote);
+
+          if ((!remote.photos || !remote.photos.length) && Array.isArray(localPhotos) && localPhotos.length) {
+            existing.photos = localPhotos;
+          }
+          if ((!remote.food || !remote.food.length) && Array.isArray(localFood) && localFood.length) {
+            existing.food = localFood;
+          }
+          existing.confirmations = Array.isArray(localConfirmations) ? localConfirmations : [];
+        } else {
+          remote.confirmations = remote.confirmations || [];
+          S.spots.unshift(remote);
+          byId.set(remote.id, remote);
+        }
+      });
+
+      this.save();
+      this.emit();
+    },
     updateSpot(id, updatedData) {
       const s = this.get(id);
       if (!s) return false;

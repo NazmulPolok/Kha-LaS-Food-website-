@@ -164,19 +164,13 @@ section.order-1 {
   background-color: var(--brand) !important;
   color: #ffffff !important;
 }
-.leaflet-control-attribution {
-  background: rgba(7, 25, 47, 0.75) !important;
-  color: #94a3b8 !important;
-}
-[data-theme="light"] .leaflet-control-attribution {
-  background: rgba(248, 246, 242, 0.85) !important;
-  color: #64748b !important;
-}
-.leaflet-control-attribution a {
-  color: var(--brand) !important;
-}
 
 .cursor-crosshair, .cursor-crosshair * { cursor: crosshair !important; }
+
+/* Leaflet fallback: OSM tiles + a dark CSS filter (no tile API key needed) */
+.fh-tiles-dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.92) saturate(0.7);
+}
 
 /* Keep White Text Utility for buttons & badges */
 .keep-white, .keep-white *, .bg-brand, .bg-brand * {
@@ -386,4 +380,305 @@ body[data-theme="light"],
   background: var(--brand) !important;
   border-color: var(--brand) !important;
   color: #ffffff !important;
+}
+
+/* ==========================================================
+   Mapbox GL adapter (used when a token is configured)
+   ========================================================== */
+.mapboxgl-map {
+  font: inherit;
+  background: var(--bg-main);
+}
+.mapboxgl-canvas { outline: none; }
+.mapboxgl-ctrl-top-right { z-index: 900; }
+.mapboxgl-ctrl-group {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-strong) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28) !important;
+}
+.mapboxgl-ctrl-group button {
+  width: 34px !important;
+  height: 34px !important;
+}
+.mapboxgl-ctrl-group button + button {
+  border-top: 1px solid var(--border-strong) !important;
+}
+.mapboxgl-ctrl-group button:hover {
+  background: var(--bg-surface-hover) !important;
+}
+[data-theme="dark"] .mapboxgl-ctrl-icon {
+  filter: invert(1) hue-rotate(180deg);
+}
+.mapboxgl-ctrl-attrib {
+  background: rgba(7, 25, 47, 0.82) !important;
+  color: #94a3b8 !important;
+  font-size: 10px !important;
+  border-radius: 8px 0 0 0;
+}
+.mapboxgl-ctrl-attrib a { color: var(--brand) !important; }
+[data-theme="light"] .mapboxgl-ctrl-attrib {
+  background: rgba(255, 255, 255, 0.86) !important;
+  color: #64748b !important;
+}
+[data-theme="dark"] .mapboxgl-ctrl-logo {
+  filter: invert(1) hue-rotate(180deg);
+}
+.fh-mapbox-marker {
+  cursor: pointer;
+  background: transparent !important;
+  border: 0 !important;
+}
+.fh-user-marker { cursor: default; }
+
+/* ==========================================================
+   Custom pins, live-status dot & geolocation marker
+   ========================================================== */
+.fh-marker-icon {
+  background: transparent !important;
+  border: 0 !important;
+}
+.fh-pin {
+  position: relative;
+}
+.fh-pin.is-closed {
+  opacity: 0.6;
+  filter: saturate(0.55);
+}
+.fh-pin.is-closed:hover,
+.fh-pin.is-closed.sel {
+  opacity: 1;
+  filter: none;
+}
+.fh-pin-status {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.fh-pin-status.open { background: #10b981; }
+.fh-pin-status.closed { background: #f43f5e; }
+
+.fh-marker-icon.is-selected,
+.fh-mapbox-marker.is-selected {
+  z-index: 999 !important;
+}
+
+.fh-user-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #2f9bff;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 7px rgba(47, 155, 255, 0.18), 0 4px 12px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+.fh-user-dot span {
+  position: absolute;
+  inset: -9px;
+  border-radius: 9999px;
+  border: 2px solid rgba(47, 155, 255, 0.55);
+  animation: fh-user-pulse 2.1s ease-out infinite;
+}
+@keyframes fh-user-pulse {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  70% { transform: scale(1.45); opacity: 0; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+/* Draggable location picker pin */
+.fh-picker-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: grab;
+  width: max-content;
+}
+.fh-picker-pin:active { cursor: grabbing; }
+.fh-picker-pin-head {
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  background: var(--brand);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 6px rgba(240, 78, 55, 0.25), 0 10px 22px rgba(0, 0, 0, 0.45);
+}
+.fh-picker-pin-tail {
+  width: 10px;
+  height: 10px;
+  background: var(--brand);
+  transform: rotate(45deg);
+  margin-top: -6px;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+.fh-picker-pin-shadow {
+  width: 20px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  filter: blur(1.5px);
+  border-radius: 9999px;
+  margin-top: 2px;
+}
+
+/* ==========================================================
+   Live status switch
+   ========================================================== */
+.fh-live-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+.fh-live-dot.open {
+  background: #10b981;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.16);
+  animation: fh-live-pulse 1.9s ease-in-out infinite;
+}
+.fh-live-dot.closed {
+  background: #f43f5e;
+  box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.14);
+}
+@keyframes fh-live-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12); }
+  50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.22); }
+}
+.fh-switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  border-radius: 9999px;
+  background: #334155;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+.fh-switch.is-on { background: #059669; }
+.fh-switch.is-locked { opacity: 0.55; cursor: not-allowed; }
+.fh-switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.fh-switch.is-on .fh-switch-knob { transform: translateX(22px); }
+
+/* ==========================================================
+   1-5 star inputs and review stars
+   ========================================================== */
+.fh-star-input .fh-star-btn {
+  color: #475569;
+  font-size: 17px;
+  line-height: 1;
+  padding: 2px 1px;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+.fh-star-input .fh-star-btn.is-active,
+.fh-star-input .fh-star-btn.is-hover {
+  color: #fbbf24;
+  transform: scale(1.12);
+}
+.fh-star-input[data-stars="hygiene"] .fh-star-btn.is-active,
+.fh-star-input[data-stars="hygiene"] .fh-star-btn.is-hover {
+  color: #38bdf8;
+}
+.fh-star-row {
+  display: inline-flex;
+  gap: 1px;
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* ==========================================================
+   QR modal + floating map actions
+   ========================================================== */
+.qr-box img,
+.qr-box canvas {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  border-radius: 8px;
+}
+
+#map-actions {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@media (max-width: 767px) {
+  #map-actions {
+    bottom: 0.75rem;
+    right: 0.75rem;
+  }
+  #map-actions button {
+    padding: 0.55rem 0.7rem;
+  }
+
+  /* Keep the mobile header on one line */
+  #btn-add-spot > span {
+    display: none;
+  }
+  #btn-add-spot {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+}
+
+@media (max-width: 430px) {
+  /* Logo mark stays, wordmark hides — frees space for account controls */
+  header .group > div:last-child {
+    display: none;
+  }
+}
+
+/* Light-mode surfaces for the new status / review cards */
+[data-theme="light"] #live-status-card,
+[data-theme="light"] #reviews > div,
+[data-theme="light"] .fh-verified-card {
+  background: #ffffff !important;
+  border-color: var(--border-main) !important;
+}
+[data-theme="light"] .fh-switch {
+  background: #cbd5e1;
+}
+[data-theme="light"] .fh-switch.is-on {
+  background: #059669;
+}
+[data-theme="light"] #reviews .bg-\[\#07192f\]\/70 {
+  background: #f8fafc !important;
+}
+[data-theme="light"] #live-status-card .text-emerald-300 {
+  color: #047857;
+}
+[data-theme="light"] #live-status-card .text-rose-300 {
+  color: #be123c;
+}
+[data-theme="light"] #live-status-card .text-amber-300,
+[data-theme="light"] #reviews .text-amber-300 {
+  color: #b45309;
+}
+[data-theme="light"] #reviews .text-sky-300 {
+  color: #0369a1;
+}
+[data-theme="light"] #route-summary {
+  color: #047857;
+}
+[data-theme="light"] #dl .bg-sky-950\/80 {
+  background: #e0f2fe !important;
+}
+[data-theme="light"] #dl .text-sky-300,
+[data-theme="light"] #dl .text-sky-400 {
+  color: #0369a1;
 }
