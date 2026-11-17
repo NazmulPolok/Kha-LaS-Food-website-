@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: foodhub
       POSTGRES_PASSWORD: foodhub
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:${FOODHUB_DB_PORT:-5432}:5432"
     volumes:
       - foodhub-postgres:/var/lib/postgresql/data
     healthcheck:

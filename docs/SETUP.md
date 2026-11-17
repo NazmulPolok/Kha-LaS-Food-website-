@@ -10,6 +10,8 @@
 
 The default connection is for local development. For another PostgreSQL server, set `DATABASE_URL` in `.env`; `.env.example` shows the expected format. Never put a database connection string in frontend JavaScript.
 
+If local port 5432 is busy, set `FOODHUB_DB_PORT=5433` before starting Compose and update the port in `DATABASE_URL`.
+
 ## Architecture
 
 - `backend/main.py` defines the FastAPI app, SQLAlchemy models, startup seed, and REST routes.

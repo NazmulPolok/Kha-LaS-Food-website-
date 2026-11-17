@@ -21,6 +21,8 @@ Open <http://127.0.0.1:8000>. FastAPI serves the website and API. Interactive AP
 
 The local database uses `postgresql+psycopg://foodhub:foodhub@localhost:5432/foodhub`. Set `DATABASE_URL` in `.env` to use another PostgreSQL server. The included database password is for local development only.
 
+If port 5432 is already in use, set `FOODHUB_DB_PORT=5433` before `docker compose up -d db` and use port 5433 in `DATABASE_URL`.
+
 ## Backend
 
 - FastAPI endpoints under `/api` provide cart reads/writes and review reads/writes.
