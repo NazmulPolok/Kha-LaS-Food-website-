@@ -4,9 +4,10 @@
   let pollTimer = null;
 
   const request = async (path, options = {}) => {
+    const token = localStorage.getItem('foodhub_access_token_v1');
     const response = await fetch(`/api${path}`, {
       ...options,
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(options.headers || {}) }
     });
     if (!response.ok) {
       const payload = await response.json().catch(() => ({}));
@@ -32,7 +33,7 @@
       phone: row.phone || '',
       about: row.description || '',
       photos: Array.isArray(row.photos) ? row.photos : [],
-      creator: row.vendor_email || 'system',
+      creator: row.is_mine ? ((FH.auth.getUser() || {}).email || 'member') : (row.has_vendor ? 'member' : 'system'),
       hasBooking: Boolean(row.has_booking),
       address: row.address || '',
       hygiene: row.hygiene_rating == null ? undefined : Number(row.hygiene_rating),
@@ -60,8 +61,7 @@
       review_count: Number(spot.reviews) || 0,
       hygiene_rating: spot.hygiene == null ? null : Number(spot.hygiene),
       delivery: spot.delivery || 'none',
-      has_booking: Boolean(spot.hasBooking),
-      vendor_email: spot.creator && spot.creator !== 'system' ? spot.creator : null
+      has_booking: Boolean(spot.hasBooking)
     };
   }
 
@@ -69,8 +69,7 @@
     return {
       id: String(row.id),
       cartId: row.cart_id,
-      authorEmail: row.author_email || '',
-      authorName: row.author_name || row.author_email || 'Anonymous Foodie',
+      authorName: row.author_name || 'Anonymous Foodie',
       overall: Number(row.overall),
       hygiene: Number(row.hygiene),
       comment: row.comment || '',
@@ -82,7 +81,6 @@
   function reviewToRow(review, cartId) {
     return {
       cart_id: cartId,
-      author_email: review.authorEmail || null,
       author_name: review.authorName || 'Anonymous Foodie',
       overall: Number(review.overall),
       hygiene: Number(review.hygiene),
@@ -102,10 +100,11 @@
         const cachedCarts = FH.store.S.spots.slice();
         if (rows.length) FH.store.mergeRemote(rows.map(rowToSpot));
         const imported = localStorage.getItem('foodhub_postgres_cart_import_v1');
-        if (!imported) {
+        const user = FH.auth.getUser();
+        if (!imported && user && FH.auth.getToken()) {
           const persistedIds = new Set(rows.map(row => String(row.id)));
           return Promise.all(cachedCarts
-            .filter(spot => !persistedIds.has(String(spot.id)))
+            .filter(spot => spot.creator === user.email && !persistedIds.has(String(spot.id)))
             .map(spot => this.saveCart(spot)))
             .then(() => {
               localStorage.setItem('foodhub_postgres_cart_import_v1', 'done');
@@ -133,6 +132,10 @@
 
     async listCarts() {
       return request('/carts');
+    },
+
+    async authenticate(mode, email, password, name) {
+      return request(`/auth/${mode}`, { method: 'POST', body: JSON.stringify({ email, password, name: name || '' }) });
     },
 
     async saveCart(spot) {

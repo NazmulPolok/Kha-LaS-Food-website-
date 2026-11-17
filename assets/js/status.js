@@ -27,8 +27,7 @@
     canManage(spot) {
       const user = FH.auth.getUser();
       if (!user) return false;
-      // Seeded/demo carts are manageable by any signed-in tester.
-      return spot.creator === user.email || spot.creator === 'system' || !spot.creator;
+      return spot.creator === user.email;
     },
 
     mount(spot, el) {

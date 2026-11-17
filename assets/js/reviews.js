@@ -225,7 +225,6 @@
           id: uid(),
           cartId: spot.id,
           authorName,
-          authorEmail: currentUser ? currentUser.email : '',
           overall: selected.overall,
           hygiene: selected.hygiene,
           comment,
@@ -253,7 +252,6 @@
 
         if (FH.db && FH.db.enabled) {
           try {
-            await FH.db.saveCart(latest);
             const saved = await FH.db.addReview(spot.id, review);
             if (saved) {
               const bucket = load()[spot.id] || [];
@@ -262,7 +260,6 @@
               save();
               el.querySelector('#review-list').innerHTML = reviewsFor(spot.id).slice(0, 8).map(reviewCard).join('');
             }
-            await FH.db.saveSummary(latest);
           } catch (err) {
             console.warn('[FH.reviews] Could not sync review:', err);
             const bucket = load()[spot.id] || [];

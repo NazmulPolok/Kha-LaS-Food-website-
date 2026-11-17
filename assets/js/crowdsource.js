@@ -31,7 +31,7 @@
   FH.crowd = {
     open(prefill) {
       const user = FH.auth.getUser();
-      if (!user) {
+      if (!user || !FH.auth.getToken()) {
         FH.auth.openAuthModal(
           () => FH.crowd.open(prefill),
           'Sign in with your email to add a newly discovered food cart to the community map.'

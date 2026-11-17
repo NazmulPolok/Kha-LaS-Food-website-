@@ -58,7 +58,7 @@
   FH.spotModal = {
     open(spotOrCoords) {
       const user = FH.auth.getUser();
-      if (!user) {
+      if (!user || !FH.auth.getToken()) {
         FH.auth.openAuthModal(() => FH.spotModal.open(spotOrCoords), "Please sign in with your email to add or edit food spots.");
         return;
       }

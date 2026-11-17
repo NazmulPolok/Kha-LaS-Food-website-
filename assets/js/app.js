@@ -135,7 +135,7 @@
     const user = FH.auth.getUser();
     const hasConfirmed = user ? confs.includes(user.email) : false;
     const progressPct = isVerified ? 100 : Math.min(100, Math.round((count / THRESHOLD) * 100));
-    const isOwner = user && (user.email === s.creator || s.creator === 'system');
+    const isOwner = user && user.email === s.creator;
 
     el.innerHTML = `
       <div class="fh-verified-card rounded-xl border border-[#1b3d6a] p-3.5 space-y-3 bg-gradient-to-br from-[#0c233f] to-[#07192f]">
@@ -260,7 +260,7 @@
 
   function openDetail(s) {
     const user = FH.auth.getUser();
-    const canEdit = user && (user.email === s.creator || s.creator === 'system');
+    const canEdit = user && user.email === s.creator;
 
     $('#detail').innerHTML = `
       <div class="sticky top-0 bg-[#07192f]/95 backdrop-blur border-b border-[#14355f] p-4 flex items-start gap-3 z-10">
