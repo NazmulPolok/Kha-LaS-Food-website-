@@ -2,11 +2,11 @@
    খাLaS service worker
    ------------------------------------------------------------
    App-shell precache + runtime caching for CDN assets.
-   Mapbox tiles, the Mapbox API and Supabase requests always go to
-   the network (live data must not be cached as if it were static).
+   Mapbox tiles/styles and API requests always go to the network
+   (live data must not be cached as if it were static).
    ============================================================ */
-const SHELL_CACHE = 'khalas-shell-v7';
-const RUNTIME_CACHE = 'khalas-runtime-v7';
+const SHELL_CACHE = 'khalas-shell-v8';
+const RUNTIME_CACHE = 'khalas-runtime-v8';
 
 const SHELL_FILES = [
   './',
@@ -64,8 +64,7 @@ self.addEventListener('activate', (event) => {
 });
 
 function isLiveHost(hostname) {
-  return hostname.endsWith('supabase.co') ||
-    hostname.includes('mapbox.com') ||
+  return hostname.includes('mapbox.com') ||
     hostname.includes('mapbox.cn') ||
     hostname.includes('tiles');
 }
@@ -135,8 +134,12 @@ self.addEventListener('fetch', (event) => {
 
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
 
-  // Live Supabase / map tiles / Mapbox styles always go to the network.
+  // Live API / map tiles / Mapbox styles always go to the network.
   // The Mapbox GL JS script itself can be cached for faster app startup.
+  if (url.origin === self.location.origin && url.pathname.startsWith('/api/')) {
+    event.respondWith(fetch(request));
+    return;
+  }
   const isMapboxLib = request.url.includes('/mapbox-gl-js/');
   if (isLiveHost(url.hostname) && !isMapboxLib) return;
 

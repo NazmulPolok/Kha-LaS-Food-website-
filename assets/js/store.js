@@ -171,6 +171,12 @@ FH.SEED = [
       this.save();
       this.select(spot.id);
       this.emit();
+      if (FH.db && FH.db.enabled) {
+        FH.db.saveCart(spot).catch(err => {
+          console.warn('[FH.store] Could not save cart:', err);
+          FH.toast('Cart saved on this device. It could not reach the backend.');
+        });
+      }
     },
     setStatus(id, status, by) {
       const s = this.get(id);
@@ -183,7 +189,7 @@ FH.SEED = [
       return true;
     },
     /**
-     * Merge carts fetched from Supabase (initial load + realtime updates).
+     * Merge carts fetched from FastAPI (initial load + periodic refresh).
      * Local-only fields (confirmations/photos) are protected when the remote
      * row has not populated them yet.
      */
@@ -226,6 +232,12 @@ FH.SEED = [
       this.save();
       this.select(id);
       this.emit();
+      if (FH.db && FH.db.enabled) {
+        FH.db.saveCart(s).catch(err => {
+          console.warn('[FH.store] Could not update cart:', err);
+          FH.toast('Cart changes are saved on this device but did not reach the backend.');
+        });
+      }
       return true;
     },
     deleteSpot(id) {
@@ -235,6 +247,12 @@ FH.SEED = [
       if (S.sel === id) S.sel = null;
       this.save();
       this.emit();
+      if (FH.db && FH.db.enabled) {
+        FH.db.deleteCart(id).catch(err => {
+          console.warn('[FH.store] Could not delete cart:', err);
+          FH.toast('Cart was removed on this device but not from the backend.');
+        });
+      }
       return true;
     },
     getUserSpots(email) {
@@ -280,6 +298,12 @@ FH.SEED = [
       s.photos.push(photoUrl);
       this.save();
       this.emit();
+      if (FH.db && FH.db.enabled) {
+        FH.db.saveCart(s).catch(err => {
+          console.warn('[FH.store] Could not save cart photo:', err);
+          FH.toast('Photo was added on this device but did not reach the backend.');
+        });
+      }
       return true;
     }
   };

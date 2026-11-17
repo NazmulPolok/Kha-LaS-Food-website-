@@ -2,9 +2,8 @@
    Live status card — Open / Closed
    ------------------------------------------------------------
    Sellers (cart creators) toggle the live status. The change is
-   written to the local store immediately and to Supabase when
-   configured. Supabase Realtime pushes the change to every open
-   device.
+   written to the local store immediately and to FastAPI when
+   available. The frontend polls the API for updates on other devices.
    ============================================================ */
 (function () {
   function escapeHtml(value) {
@@ -108,8 +107,8 @@
           try {
             await FH.db.updateStatus(spot, next);
           } catch (err) {
-            console.warn('[FH.status] Supabase update failed:', err);
-            FH.toast('Status saved on this device. It will sync when Supabase is reachable.');
+            console.warn('[FH.status] FastAPI update failed:', err);
+            FH.toast('Status saved on this device. It will sync when the backend is reachable.');
           }
         }
       };

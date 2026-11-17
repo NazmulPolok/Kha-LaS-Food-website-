@@ -1,19 +1,14 @@
 /* ============================================================
    খাLaS — Runtime configuration
    ------------------------------------------------------------
-   Fill in your own keys below. These are PUBLIC client keys:
-   - Mapbox tokens are meant to be used in the browser.
-   - Supabase anon keys are public too — protect data with RLS.
+   Mapbox's public token is optional. Database settings stay on the server
+   in DATABASE_URL and are never exposed to browser JavaScript.
 
    See docs/SETUP.md for step-by-step instructions.
    ============================================================ */
 window.FH_CONFIG = {
   /* Mapbox — https://account.mapbox.com/access-tokens/ */
   MAPBOX_TOKEN: '',
-
-  /* Supabase — Project Settings → API */
-  SUPABASE_URL: '',        // e.g. https://abcdefghijklmnop.supabase.co
-  SUPABASE_ANON_KEY: '',   // the "anon public" key
 
   /* Optional map styling (you can point these at your own Mapbox styles) */
   MAP_STYLE_DARK: 'mapbox://styles/mapbox/dark-v11',

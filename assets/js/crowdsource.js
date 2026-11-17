@@ -3,7 +3,7 @@
    ------------------------------------------------------------
    A lightweight, cart-focused alternative to the full spot form.
    Required: name, cart type, pin location. Writes to the local
-   store and to Supabase (carts table) when configured.
+   store and to the FastAPI/PostgreSQL backend when available.
    ============================================================ */
 (function () {
   const CART_TYPES = [
@@ -265,14 +265,6 @@
         closeSelf();
         FH.toast(`"${name}" is now on the map. Thanks for crowdsourcing!`);
 
-        if (FH.db && FH.db.enabled) {
-          FH.db.saveCart(spot)
-            .then(() => FH.toast('Cart synced to Supabase.'))
-            .catch((err) => {
-              console.warn('[FH.crowd] Supabase insert failed:', err);
-              FH.toast('Cart saved on this device. Configure Supabase to share it with everyone.');
-            });
-        }
       };
     }
   };

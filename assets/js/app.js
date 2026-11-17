@@ -393,7 +393,7 @@
     openAddAction();
     openFindAction();
 
-    // Supabase loads asynchronously; merge remote carts then retry deep links.
+    // Load persisted carts from FastAPI, then retry any cart deep link.
     if (FH.db && typeof FH.db.init === 'function') {
       FH.db.init().then(() => {
         sync();

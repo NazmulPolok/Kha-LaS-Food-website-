@@ -1,43 +1,19 @@
-/* ============================================================
-   Supabase data layer
-   ------------------------------------------------------------
-   Loaded after store.js. If no credentials are configured, the
-   app keeps working entirely from localStorage. When Supabase is
-   configured it becomes the source of truth for carts + reviews.
-   ============================================================ */
+/* FastAPI + PostgreSQL data adapter. Keep this API compatible with FH.db. */
 (function () {
-  const cfg = window.FH_CONFIG || {};
-  const SUPABASE_SDK = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
-
-  const url = String(cfg.SUPABASE_URL || '').trim();
-  const key = String(cfg.SUPABASE_ANON_KEY || '').trim();
-  const configured = /^https?:\/\//i.test(url) && url.length > 10 && key.length > 20 &&
-    !url.includes('YOUR_PROJECT') && !key.includes('YOUR_');
-
-  let client = null;
-  let sdkPromise = null;
   let readyPromise = null;
-  let channel = null;
+  let pollTimer = null;
 
-  function loadSdk() {
-    if (window.supabase && typeof window.supabase.createClient === 'function') {
-      return Promise.resolve(window.supabase);
-    }
-    if (sdkPromise) return sdkPromise;
-    sdkPromise = new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = SUPABASE_SDK;
-      script.async = true;
-      script.crossOrigin = 'anonymous';
-      script.onload = () => {
-        if (window.supabase && typeof window.supabase.createClient === 'function') resolve(window.supabase);
-        else reject(new Error('Supabase SDK loaded but createClient() is unavailable.'));
-      };
-      script.onerror = () => reject(new Error('Could not load the Supabase SDK.'));
-      document.head.appendChild(script);
+  const request = async (path, options = {}) => {
+    const response = await fetch(`/api${path}`, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
     });
-    return sdkPromise;
-  }
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload.detail || `API request failed (${response.status})`);
+    }
+    return response.status === 204 ? null : response.json();
+  };
 
   function rowToSpot(row) {
     return {
@@ -47,8 +23,8 @@
       lng: Number(row.lng),
       food: Array.isArray(row.cuisines) ? row.cuisines : [],
       type: row.type || 'Food Cart',
-      rating: row.rating == null ? 0 : Number(row.rating),
-      reviews: row.review_count == null ? 0 : Number(row.review_count),
+      rating: Number(row.rating) || 0,
+      reviews: Number(row.review_count) || 0,
       price: row.price || '৳',
       token: 0,
       delivery: row.delivery || 'none',
@@ -85,14 +61,13 @@
       hygiene_rating: spot.hygiene == null ? null : Number(spot.hygiene),
       delivery: spot.delivery || 'none',
       has_booking: Boolean(spot.hasBooking),
-      vendor_email: spot.creator && spot.creator !== 'system' ? spot.creator : null,
-      updated_at: new Date().toISOString()
+      vendor_email: spot.creator && spot.creator !== 'system' ? spot.creator : null
     };
   }
 
   function rowToReview(row) {
     return {
-      id: row.id,
+      id: String(row.id),
       cartId: row.cart_id,
       authorEmail: row.author_email || '',
       authorName: row.author_name || row.author_email || 'Anonymous Foodie',
@@ -116,137 +91,83 @@
   }
 
   FH.db = {
-    configured,
+    configured: true,
     enabled: false,
     client: null,
 
-    /** Loads the SDK, connects, subscribes to live status changes and merges remote carts. */
     init() {
-      if (!configured) {
-        console.info('[FH.db] Supabase is not configured — running in local demo mode.');
-        return Promise.resolve(false);
-      }
       if (readyPromise) return readyPromise;
-
-      readyPromise = loadSdk()
-        .then((sdk) => {
-          client = sdk.createClient(url, key, {
-            auth: { persistSession: false, autoRefreshToken: false }
-          });
-          this.client = client;
-          this.enabled = true;
-          this.subscribe();
-          return this.listCarts();
-        })
-        .then((rows) => {
-          if (Array.isArray(rows) && rows.length) {
-            FH.store.mergeRemote(rows.map(rowToSpot));
-            console.info(`[FH.db] Loaded ${rows.length} cart(s) from Supabase.`);
-          }
-          return true;
-        })
-        .catch((err) => {
-          console.warn('[FH.db] Supabase connection failed:', err);
-          if (typeof FH.toast === 'function') {
-            FH.toast('Supabase is configured but could not be reached. Saved locally for now.');
-          }
-          return false;
-        });
-
+      readyPromise = this.listCarts().then(rows => {
+        this.enabled = true;
+        const cachedCarts = FH.store.S.spots.slice();
+        if (rows.length) FH.store.mergeRemote(rows.map(rowToSpot));
+        const imported = localStorage.getItem('foodhub_postgres_cart_import_v1');
+        if (!imported) {
+          const persistedIds = new Set(rows.map(row => String(row.id)));
+          return Promise.all(cachedCarts
+            .filter(spot => !persistedIds.has(String(spot.id)))
+            .map(spot => this.saveCart(spot)))
+            .then(() => {
+              localStorage.setItem('foodhub_postgres_cart_import_v1', 'done');
+              return rows;
+            });
+        }
+        return rows;
+      }).then(rows => {
+        console.info(`[FH.db] Loaded ${rows.length} cart(s) from FastAPI/PostgreSQL.`);
+        if (!pollTimer) {
+          pollTimer = setInterval(() => {
+            this.listCarts().then(latest => FH.store.mergeRemote(latest.map(rowToSpot)))
+              .catch(err => console.warn('[FH.db] Could not refresh carts:', err));
+          }, 10000);
+        }
+        return true;
+      }).catch(err => {
+        this.enabled = false;
+        console.warn('[FH.db] FastAPI/PostgreSQL is unavailable:', err);
+        FH.toast('Backend is unavailable. Showing locally saved demo data.');
+        return false;
+      });
       return readyPromise;
     },
 
     async listCarts() {
-      if (!client) return [];
-      const { data, error } = await client
-        .from('carts')
-        .select('*')
-        .order('created_at', { ascending: true });
-      if (error) throw error;
-      return data || [];
+      return request('/carts');
     },
 
-    /** Creates or updates a cart. Seed carts are upserted on first write. */
     async saveCart(spot) {
-      if (!client || !spot) return null;
-      const { data, error } = await client
-        .from('carts')
-        .upsert(spotToRow(spot), { onConflict: 'id' })
-        .select()
-        .maybeSingle();
-      if (error) throw error;
-      return data;
+      if (!spot) return null;
+      return request(`/carts/${encodeURIComponent(spot.id)}`, {
+        method: 'PUT', body: JSON.stringify(spotToRow(spot))
+      });
+    },
+
+    async deleteCart(id) {
+      return request(`/carts/${encodeURIComponent(id)}`, { method: 'DELETE' });
     },
 
     async updateStatus(spot, status) {
-      if (!client || !spot) return false;
       await this.saveCart({ ...spot, status: status === 'closed' ? 'closed' : 'open' });
       return true;
     },
 
     async listReviews(cartId) {
-      if (!client || !cartId) return [];
-      const { data, error } = await client
-        .from('reviews')
-        .select('*')
-        .eq('cart_id', cartId)
-        .order('created_at', { ascending: false })
-        .limit(60);
-      if (error) throw error;
-      return (data || []).map(rowToReview);
+      return request(`/carts/${encodeURIComponent(cartId)}/reviews`);
     },
 
     async addReview(cartId, review) {
-      if (!client) return null;
-      const { data, error } = await client
-        .from('reviews')
-        .insert(reviewToRow(review, cartId))
-        .select()
-        .maybeSingle();
-      if (error) throw error;
-      return data ? rowToReview(data) : null;
+      const row = await request(`/carts/${encodeURIComponent(cartId)}/reviews`, {
+        method: 'POST', body: JSON.stringify(reviewToRow(review, cartId))
+      });
+      return row ? rowToReview(row) : null;
     },
 
-    /** Persists aggregate rating + hygiene so other devices see the same summary. */
     async saveSummary(spot) {
-      if (!client || !spot) return false;
-      try {
-        const patch = {
-          ...spot,
-          hygiene_rating: spot.hygiene == null ? null : Number(spot.hygiene),
-          review_count: Number(spot.reviews) || 0,
-          rating: Number(spot.rating) || 0
-        };
-        await this.saveCart(patch);
-        return true;
-      } catch (err) {
-        console.warn('[FH.db] Could not save review summary:', err);
-        return false;
-      }
+      if (!spot) return false;
+      await this.saveCart(spot);
+      return true;
     },
 
-    /** Realtime: keep status and vendor edits in sync across devices. */
-    subscribe() {
-      if (!client || channel) return;
-      try {
-        channel = client
-          .channel('khalas-carts-live')
-          .on('postgres_changes', { event: '*', schema: 'public', table: 'carts' }, (payload) => {
-            if (payload && payload.new && payload.new.id) {
-              FH.store.mergeRemote([rowToSpot(payload.new)]);
-            }
-          })
-          .subscribe((status) => {
-            if (status === 'CHANNEL_ERROR') {
-              console.warn('[FH.db] Realtime channel unavailable. Live status still works on this device.');
-            }
-          });
-      } catch (err) {
-        console.warn('[FH.db] Realtime setup failed:', err);
-      }
-    },
-
-    /* Exposed for debugging / future features */
     _rowToSpot: rowToSpot,
     _spotToRow: spotToRow
   };

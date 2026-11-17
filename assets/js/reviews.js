@@ -4,7 +4,7 @@
    Two ratings per review:
    - overall experience (food / service)
    - hygiene
-   Reviews are written locally first, then to Supabase when
+   Reviews are written locally first, then to FastAPI when
    configured. The legacy 1-10 map score is kept in sync by
    converting the overall 5-star score to a 10-point score.
    ============================================================ */
@@ -272,7 +272,7 @@
               save();
               el.querySelector('#review-list').innerHTML = reviewsFor(spot.id).slice(0, 8).map(reviewCard).join('');
             }
-            FH.toast('Review saved on this device — it will need a connection to appear for everyone.');
+            FH.toast('Review saved on this device — it needs the backend connection to appear for everyone.');
           }
         }
       };
