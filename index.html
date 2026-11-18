@@ -16,8 +16,12 @@
 <script src="assets/css/tailwind.config.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="assets/css/styles.css?v=4">
-<link rel="stylesheet" href="assets/css/ad-wall.css?v=1">
+<script>
+  if (window.caches) caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))));
+  if (navigator.serviceWorker) navigator.serviceWorker.getRegistrations().then(regs => Promise.all(regs.map(r => r.unregister())));
+</script>
+<link rel="stylesheet" href="assets/css/styles.css?v=8">
+<link rel="stylesheet" href="assets/css/ad-wall.css?v=2">
 </head>
 <body class="h-screen flex flex-col overflow-hidden bg-[#07192f] text-slate-100 selection:bg-brand selection:text-white" data-theme="dark">
 <header class="bg-[#07192f] border-b border-[#14355f] px-3 md:px-4 py-2 flex items-center justify-between gap-2.5 md:gap-3 shadow-md z-20">
@@ -77,8 +81,8 @@
         <span><i class="fa-solid fa-circle" style="color:#eab308"></i> 5.5+</span>
         <span><i class="fa-solid fa-circle" style="color:#f04e37"></i> &lt;5.5</span>
       </div>
-      <div class="text-[11px] text-emerald-400 font-semibold">
-        <i class="fa-solid fa-certificate text-emerald-400"></i> 25+ = Verified
+      <div class="text-[11px] text-emerald-400 font-semibold" title="ম্যাপে চিহ্নিত স্থানে দোকানটি বাস্তবে বিদ্যমান কি না তা ২৫+ জন স্থানীয় ব্যবহারকারী নিশ্চিত করেছেন (Physical Presence Confirmed, Not a Food Review)">
+        <i class="fa-solid fa-location-dot text-emerald-400"></i> ২৫+ = স্পট নিশ্চিত (Presence)
       </div>
     </div>
     <ul id="list" class="space-y-2"></ul>
@@ -280,12 +284,12 @@
 <script src="assets/js/community.js"></script>
 <script src="assets/js/gallery.js"></script>
 <script src="assets/js/status.js?v=2"></script>
-<script src="assets/js/reviews.js?v=2"></script>
+<script src="assets/js/reviews.js?v=7"></script>
 <script src="assets/js/qr.js"></script>
-<script src="assets/js/crowdsource.js?v=2"></script>
-<script src="assets/js/pwa.js"></script>
-<script src="assets/js/spot-modal.js?v=4"></script>
-<script src="assets/js/ad-wall.js?v=1"></script>
-<script src="assets/js/app.js?v=7"></script>
+<script src="assets/js/crowdsource.js?v=7"></script>
+<script src="assets/js/pwa.js?v=20"></script>
+<script src="assets/js/spot-modal.js?v=8"></script>
+<script src="assets/js/ad-wall.js?v=2"></script>
+<script src="assets/js/app.js?v=11"></script>
 </body>
 </html>

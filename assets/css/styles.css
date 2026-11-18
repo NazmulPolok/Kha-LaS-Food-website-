@@ -656,8 +656,167 @@ body[data-theme="light"],
 [data-theme="light"] .fh-switch.is-on {
   background: #059669;
 }
-[data-theme="light"] #reviews .bg-\[\#07192f\]\/70 {
+[data-theme="light"] #reviews .bg-\[\#07192f\]\/70,
+[data-theme="light"] .fh-verified-card .bg-\[\#07192f\]\/70 {
   background: #f8fafc !important;
+  border-color: var(--border-main) !important;
+}
+[data-theme="light"] .fh-verified-card .bg-blue-950\/40 {
+  background-color: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+[data-theme="light"] .fh-verified-card .text-blue-300 {
+  color: #1d4ed8 !important;
+}
+[data-theme="light"] .fh-verified-card .text-blue-200\/90 {
+  color: #1e3a8a !important;
+}
+[data-theme="light"] .fh-verified-card .italic,
+[data-theme="light"] .fh-verified-card .bg-\[\#07192f\]\/90 {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  border-color: #bfdbfe !important;
+}
+[data-theme="light"] .fh-verified-card .bg-\[\#143054\] {
+  background-color: #e2e8f0 !important;
+}
+[data-theme="light"] #reviews .italic,
+[data-theme="light"] #modal .italic {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+/* Custom modal boxes for verification and reviews in both themes */
+.fh-verif-box {
+  background-color: #0c233f;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.fh-review-box {
+  background-color: #0c233f;
+  border: 1px solid #1b3d6a;
+}
+
+[data-theme="light"] .fh-verif-box,
+[data-theme="light"] .fh-review-box {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .fh-verif-box .text-white,
+[data-theme="light"] .fh-review-box .text-white {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .fh-verif-box .text-slate-200,
+[data-theme="light"] .fh-verif-box .text-slate-300,
+[data-theme="light"] .fh-review-box .text-slate-200,
+[data-theme="light"] .fh-review-box .text-slate-300 {
+  color: #334155 !important;
+}
+
+[data-theme="light"] .fh-verif-box .text-slate-400,
+[data-theme="light"] .fh-review-box .text-slate-400 {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .fh-verif-box .italic,
+[data-theme="light"] .fh-review-box .italic {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+/* Light mode modals (Add Spot, Edit Spot, Quick Add, Auth) */
+[data-theme="light"] #modal > div {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] #modal .bg-gradient-to-br,
+[data-theme="light"] #modal .bg-\[\#0c233f\],
+[data-theme="light"] #modal .bg-\[\#07192f\] {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] #modal .text-white:not(.keep-white) {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] #modal .text-slate-200,
+[data-theme="light"] #modal .text-slate-300 {
+  color: #334155 !important;
+}
+
+[data-theme="light"] #modal .text-slate-400 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] #modal select,
+[data-theme="light"] #modal input:not([type="checkbox"]),
+[data-theme="light"] #modal textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] #modal select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] #modal .border-\[\#1b3d6a\] {
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] #modal .text-emerald-300,
+[data-theme="light"] #modal .text-emerald-400 {
+  color: #047857 !important;
+}
+
+[data-theme="light"] #modal .bg-emerald-950\/80,
+[data-theme="light"] #modal .bg-emerald-950 {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #065f46 !important;
+}
+
+[data-theme="light"] #modal .text-amber-400,
+[data-theme="light"] #modal .text-amber-300 {
+  color: #b45309 !important;
+}
+
+[data-theme="light"] #modal .bg-amber-950\/40 {
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #92400e !important;
+}
+
+[data-theme="light"] #food-taste-val,
+[data-theme="light"] #food-taste-desc {
+  color: #b45309 !important;
+}
+
+[data-theme="light"] #food-hygiene-val,
+[data-theme="light"] #food-hygiene-desc {
+  color: #0369a1 !important;
+}
+
+[data-theme="light"] #review-tag-cloud button {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+[data-theme="light"] #review-tag-cloud button.bg-amber-500\/20 {
+  background-color: #fef3c7 !important;
+  border-color: #f59e0b !important;
+  color: #92400e !important;
 }
 [data-theme="light"] #live-status-card .text-emerald-300 {
   color: #047857;

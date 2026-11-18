@@ -47,7 +47,9 @@
     init() {
       if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').catch((err) => {
+          navigator.serviceWorker.register('./sw.js?v=20').then((reg) => {
+            if (reg) reg.update();
+          }).catch((err) => {
             console.warn('[FH.pwa] Service worker registration failed:', err);
           });
         });

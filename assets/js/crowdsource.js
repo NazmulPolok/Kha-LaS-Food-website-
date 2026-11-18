@@ -126,6 +126,54 @@
                 class="w-full px-3 py-2 border border-[#1b3d6a] bg-[#0c233f] text-white rounded-xl text-sm resize-none focus:border-brand focus:outline-none"></textarea>
             </div>
 
+            <!-- 1. Ground Presence Confirmation & Ground Rating -->
+            <div class="fh-verif-box p-3 bg-[#0c233f] rounded-xl border border-emerald-500/30 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-map-location-dot text-emerald-400"></i> Ground Presence Confirmation
+                </span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">Location Only</span>
+              </div>
+              <p class="text-xs text-slate-200 leading-relaxed italic bg-[#07192f] p-2.5 rounded-lg border border-[#1b3d6a]">
+                "Note: This ground confirmation is strictly to verify that the spot is in the 100% correct physical location on the map so users can find it in person."
+              </p>
+              <label class="flex items-center gap-2 cursor-pointer pt-0.5">
+                <input id="crowd-confirm-loc" type="checkbox" checked required class="w-4 h-4 accent-emerald-500 rounded">
+                <span class="text-xs font-semibold text-emerald-300">I confirm this spot physically exists at this exact 100% accurate location.</span>
+              </label>
+
+              <!-- Live Ground Presence Rating -->
+              <div class="p-2.5 rounded-lg bg-[#07192f] border border-[#1b3d6a] space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-bold text-white flex items-center gap-1">
+                    <i class="fa-solid fa-award text-amber-400"></i> Ground Presence Rating
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <span class="text-xs font-black text-amber-400 font-mono">0.4</span>
+                    <span class="text-[10px] text-slate-400">/ 10.0</span>
+                    <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-500/30 ml-1">1/25 Confirmed</span>
+                  </div>
+                </div>
+                <div class="w-full bg-[#143054] h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-gradient-to-r from-amber-500 to-emerald-400 h-full rounded-full" style="width: 4%"></div>
+                </div>
+                <p class="text-[10px] text-slate-300 leading-snug">
+                  <b>২৫ জনের কনফার্মেশন কোটা:</b> আপনার ১ম কনফার্মেশনে রেটিং ০.৪/১০.০। লোকাল ভোজনরসিকদের ২৫টি কনফার্মেশন পূর্ণ হলে এটি ১০.০/১০.০ ফুল ভেরিফাইড রেটিং অর্জন করবে।
+                </p>
+              </div>
+            </div>
+
+            <!-- 2. Separate Food & Hygiene Reviews Notice -->
+            <div class="p-2.5 bg-[#07192f] rounded-xl border border-[#1b3d6a] flex items-center justify-between gap-2.5 text-xs">
+              <div class="flex items-start gap-2">
+                <i class="fa-solid fa-utensils text-amber-400 text-xs mt-0.5 shrink-0"></i>
+                <div class="text-[11px] text-slate-300">
+                  <b class="text-white">খাবারের রিভিউ ও রেটিং:</b> পাবলিশ হওয়ার পর স্পটের ড্রয়ার থেকে স্টার রেটিং ও বিস্তারিত রিভিউ দেওয়া যাবে।
+                </div>
+              </div>
+              <span class="text-[9px] font-semibold text-slate-400 border border-[#1b3d6a] px-1.5 py-0.5 rounded shrink-0">Post-Publish</span>
+            </div>
+
             <div class="bg-sky-950/40 border border-sky-500/30 rounded-xl p-3 text-[11px] text-sky-200 flex items-start gap-2">
               <i class="fa-solid fa-circle-info text-sky-400 mt-0.5"></i>
               <div>Added as <b>${escapeHtml(user.email)}</b>. The cart creator (vendor) can later toggle its live Open / Closed status and download a QR code.</div>
@@ -235,8 +283,9 @@
           food: [cartType],
           cartKind: cartType,
           type: 'Food Cart',
-          rating: 5.0,
+          rating: 8.5,
           reviews: 0,
+          hygiene: null,
           price: '৳',
           token: 0,
           delivery: 'none',
@@ -263,7 +312,7 @@
 
         FH.store.addSpot(spot);
         closeSelf();
-        FH.toast(`"${name}" is now on the map. Thanks for crowdsourcing!`);
+        FH.toast(`"${name}" is now on the map. Location confirmed (1/25)!`);
 
       };
     }

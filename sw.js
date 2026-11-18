@@ -5,8 +5,8 @@
    Mapbox tiles/styles and API requests always go to the network
    (live data must not be cached as if it were static).
    ============================================================ */
-const SHELL_CACHE = 'khalas-shell-v8';
-const RUNTIME_CACHE = 'khalas-runtime-v8';
+const SHELL_CACHE = 'khalas-shell-v20';
+const RUNTIME_CACHE = 'khalas-runtime-v20';
 
 const SHELL_FILES = [
   './',
@@ -98,15 +98,19 @@ async function networkFirst(request) {
 }
 
 async function staleWhileRevalidate(request) {
+  // On localhost / 127.0.0.1, always fetch fresh from network to prevent dev staleness
+  if (self.location.hostname === '127.0.0.1' || self.location.hostname === 'localhost') {
+    return networkFirst(request);
+  }
   const cache = await caches.open(SHELL_CACHE);
-  const cached = await cache.match(request, { ignoreSearch: true });
+  const cached = await cache.match(request);
   const network = fetch(request)
     .then((response) => {
       if (response && response.ok) cache.put(request, response.clone());
       return response;
     })
     .catch(() => cached);
-  return cached || network;
+  return network || cached;
 }
 
 async function cacheFirst(request) {

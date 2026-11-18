@@ -72,8 +72,8 @@
           <div class="text-xs text-slate-400 truncate mt-0.5">${FH.esc(s.type)}, ${s.food.map(FH.esc).join(', ')}, ${s.price}</div>
           <div class="flex flex-wrap items-center gap-1.5 mt-1">
             ${isVer
-              ? `<span class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300 bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded-full"><i class="fa-solid fa-certificate text-emerald-400"></i> Verified (${confs})</span>`
-              : `<span class="inline-flex items-center gap-1 text-[10px] font-medium text-amber-300 bg-amber-950/70 border border-amber-500/40 px-1.5 py-0.5 rounded-full"><i class="fa-regular fa-clock text-amber-400"></i> Pending (${confs}/${THRESHOLD})</span>`
+              ? `<span class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300 bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded-full" title="ম্যাপে এই লোকেশনটি ২৫+ জন স্থানীয় ব্যবহারকারী বাস্তবে দেখে নিশ্চিত করেছেন (লোকেশন কনফার্মেশন, এটি খাবারের রিভিউ নয়)"><i class="fa-solid fa-location-dot text-emerald-400"></i> Spot Confirmed (${confs})</span>`
+              : `<span class="inline-flex items-center gap-1 text-[10px] font-medium text-amber-300 bg-amber-950/70 border border-amber-500/40 px-1.5 py-0.5 rounded-full" title="ম্যাপে বাস্তব উপস্থিতি নিশ্চিত করতে ২৫ জনের কনফার্মেশন প্রয়োজন (${confs}/${THRESHOLD})"><i class="fa-regular fa-clock text-amber-400"></i> Location Pending (${confs}/${THRESHOLD})</span>`
             }
             ${hasBooking
               ? `<span class="inline-flex items-center gap-1 text-[10px] text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 px-1.5 py-0.5 rounded" title="Table Booking Available"><i class="fa-solid fa-calendar-check text-emerald-400"></i> Booking</span>`
@@ -136,46 +136,86 @@
     const hasConfirmed = user ? confs.includes(user.email) : false;
     const progressPct = isVerified ? 100 : Math.min(100, Math.round((count / THRESHOLD) * 100));
     const isOwner = user && user.email === s.creator;
+    const groundScore = Math.min(10, Math.round((count / THRESHOLD) * 10 * 10) / 10);
 
     el.innerHTML = `
       <div class="fh-verified-card rounded-xl border border-[#1b3d6a] p-3.5 space-y-3 bg-gradient-to-br from-[#0c233f] to-[#07192f]">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5">
-            ${isVerified
-              ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
-                   <i class="fa-solid fa-certificate text-emerald-400"></i> Community Verified
-                 </span>`
-              : `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-950/80 text-amber-300 border border-amber-500/40">
-                   <i class="fa-solid fa-clock text-amber-400"></i> Pending Verification
-                 </span>`
-            }
+        <!-- Header: Physical Spot Existence Verification -->
+        <div class="flex items-start justify-between gap-2 border-b border-[#14355f] pb-2.5">
+          <div>
+            <div class="flex items-center gap-1.5">
+              ${isVerified
+                ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
+                     <i class="fa-solid fa-location-dot text-emerald-400"></i> Ground Presence Confirmed
+                   </span>`
+                : `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-950/80 text-amber-300 border border-amber-500/40">
+                     <i class="fa-solid fa-map-pin text-amber-400"></i> Location Verification Pending
+                   </span>`
+              }
+            </div>
+            <div class="text-[11px] font-bold text-slate-300 mt-1 flex items-center gap-1">
+              <span>ম্যাপে স্পট উপস্থিতি নিশ্চিতকরণ (Ground Presence)</span>
+            </div>
           </div>
-          <span class="text-xs font-semibold text-slate-300 font-mono">
-            ${isVerified
-              ? `<b class="text-emerald-400 text-sm">${count}</b> <span class="text-slate-400 text-[11px] font-sans font-normal">Confirms (Unlimited &infin;)</span>`
-              : `<b class="text-amber-400">${count}</b> / ${THRESHOLD} Confirms`
-            }
-          </span>
+          <div class="text-right shrink-0">
+            <div class="text-xs font-semibold text-slate-200 font-mono">
+              ${isVerified
+                ? `<b class="text-emerald-400 text-sm">${count}</b> <span class="text-slate-400 text-[11px] font-sans font-normal">Confirms (&infin;)</span>`
+                : `<b class="text-amber-400">${count}</b> / ${THRESHOLD} Confirms`
+              }
+            </div>
+            <div class="text-[9px] text-slate-400 uppercase font-semibold">Locals Confirmed</div>
+          </div>
         </div>
 
-        <!-- Verification Progress Bar towards Lower Limit of 25 -->
-        <div class="space-y-1">
-          <div class="relative w-full h-3 bg-[#143054] rounded-full overflow-hidden">
-            <div class="h-full ${isVerified ? 'bg-gradient-to-r from-emerald-500 to-teal-400' : 'bg-brand'} rounded-full transition-all duration-300" style="width: ${Math.max(progressPct, count > 0 ? 4 : 0)}%"></div>
+        <!-- Explicit clarification banner: THIS IS NOT A FOOD REVIEW -->
+        <div class="bg-blue-950/40 border border-blue-500/30 rounded-xl p-3 text-xs text-blue-200/90 leading-snug space-y-2">
+          <div class="font-bold flex items-center justify-between text-blue-300 text-xs">
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-map-pin text-blue-400"></i> Ground Presence Verification</span>
+            <span class="text-[10px] bg-blue-900/60 border border-blue-400/40 px-2 py-0.5 rounded font-mono">Location Check</span>
           </div>
-          <div class="flex justify-between text-[10px] text-slate-400">
+          <div class="p-2.5 rounded-lg bg-[#07192f]/90 border border-blue-500/30 text-slate-200 text-xs italic font-medium leading-relaxed">
+            "Note: This ground confirmation is strictly to state whether the spot is in the 100% correct physical location on the map. It is not a food review."
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Since any user can pin a roadside cart, at least <b>25 community confirmations</b> are required to prove the cart physically exists here and prevent fake locations.
+          </p>
+        </div>
+
+        <!-- Live Ground Presence Rating (tied directly to 25 confirmations) -->
+        <div class="p-3 rounded-xl bg-[#07192f] border border-[#1b3d6a] space-y-2">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-award text-amber-400"></i> Ground Presence Rating
+              </span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">ম্যাপে ২৫ জনের কনফার্মেশনের উপর ভিত্তি করে রেটিং বৃদ্ধি পায়</span>
+            </div>
+            <div class="text-right">
+              <div class="text-base font-black ${isVerified ? 'text-emerald-400' : 'text-amber-400'} font-mono">
+                ${groundScore.toFixed(1)} <span class="text-xs text-slate-400 font-medium font-sans">/ 10.0</span>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded ${isVerified ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/40' : 'bg-amber-950 text-amber-300 border border-amber-500/40'}">
+                ${count}/${THRESHOLD} Confirmed
+              </span>
+            </div>
+          </div>
+
+          <div class="w-full bg-[#143054] h-2 rounded-full overflow-hidden">
+            <div class="h-full ${isVerified ? 'bg-gradient-to-r from-emerald-500 to-teal-400' : 'bg-gradient-to-r from-amber-500 to-emerald-400'} rounded-full transition-all duration-300" style="width: ${progressPct}%"></div>
+          </div>
+
+          <div class="flex justify-between text-[10px] text-slate-400 font-mono">
             <span>0</span>
-            <span class="font-semibold ${isVerified ? 'text-emerald-400' : 'text-amber-400'}">
-              ${isVerified ? '✓ 25 Lower Limit Passed' : '25 Minimum Lower Limit'}
-            </span>
-            <span class="text-slate-500 font-mono">Unlimited &infin;</span>
+            <span>25 Min</span>
+            <span>Unlimited &infin;</span>
           </div>
         </div>
 
         <p class="text-xs text-slate-300 leading-relaxed">
           ${isVerified
-            ? `<i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i><b>Verified Authentic:</b> <b>${count}</b> registered foodies have confirmed this spot with rating and photos. There is <b>no upper limit</b>.`
-            : `<i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>Check the photos above and confirm if this spot exists and is authentic! Needs <b>${THRESHOLD - count} more confirmation(s)</b> to reach the <b>lower limit of 25</b>.`
+            ? `<i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i><b>স্পটের সত্যতা প্রমাণিত:</b> <b>${count}</b> জন খাদ্যরসিক নিশ্চিত করেছেন যে এই দোকানটি বাস্তবে ঠিক এই স্থানেই রয়েছে। (কোনো সর্বোচ্চ সীমা নেই)`
+            : `<i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>আপনি কি এই স্থানে দোকানটি সশরীরে দেখেছেন? বাস্তবে উপস্থিতি নিশ্চিত করতে নিচে কনফার্ম করুন (আরো <b>${THRESHOLD - count} জন</b> প্রয়োজন)।`
           }
         </p>
 
@@ -183,12 +223,24 @@
         <div>
           ${hasConfirmed
             ? `<button id="btn-toggle-confirm" type="button" class="w-full rounded-xl bg-[#0f2d52] hover:bg-[#143966] border border-emerald-500/50 text-emerald-300 py-2.5 px-3 text-xs md:text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-[0.98]">
-                 <i class="fa-solid fa-check-double text-emerald-400"></i> You Confirmed this Spot (${FH.esc(user.email)}) <span class="text-[10px] font-normal underline ml-1 text-emerald-400">Undo</span>
+                 <i class="fa-solid fa-check-double text-emerald-400"></i> আপনি স্পটটির বাস্তব উপস্থিতি নিশ্চিত করেছেন <span class="text-[10px] font-normal underline ml-1 text-emerald-400">(Undo)</span>
                </button>`
-            : `<button id="btn-toggle-confirm" type="button" class="w-full rounded-xl bg-brand hover:bg-brand-hover text-white py-2.5 px-3 text-xs md:text-sm font-semibold flex items-center justify-center gap-2 shadow-lg shadow-brand/20 transition active:scale-[0.98]">
-                 <i class="fa-solid fa-circle-check"></i> ${user ? 'I Confirm this Spot is Real & Accurate' : 'Sign in with Email to Confirm this Spot'}
+            : `<button id="btn-toggle-confirm" type="button" class="w-full rounded-xl bg-brand hover:bg-brand-hover text-white py-2.5 px-3 text-xs md:text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-brand/20 transition active:scale-[0.98]">
+                 <i class="fa-solid fa-map-location-dot"></i> ${user ? 'দোকানটি বাস্তবে এখানে আছে — আমি কনফার্ম করছি' : 'লগইন করে স্পটের বাস্তব উপস্থিতি নিশ্চিত করুন'}
                </button>`
           }
+        </div>
+
+        <!-- Direct trigger for Separate Food & Hygiene Reviews -->
+        <div class="bg-[#07192f]/70 border border-[#14355f] rounded-xl p-2.5 flex items-center justify-between text-xs gap-2">
+          <div class="text-[11px] text-slate-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-utensils text-amber-400"></i>
+            <span>খাবারের স্বাদ ও পরিচ্ছন্নতার আলাদা রিভিউ:</span>
+          </div>
+          <button id="btn-open-review-from-verif" type="button" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-lg font-bold text-xs shrink-0 inline-flex items-center gap-1.5 transition active:scale-95">
+            <i class="fa-solid fa-star text-amber-400"></i>
+            <span>খাবার রিভিউ দিন</span>
+          </button>
         </div>
 
         <!-- Confirmed Users list -->
@@ -252,6 +304,11 @@
       };
     }
 
+    const btnOpenRevFromVerif = el.querySelector('#btn-open-review-from-verif');
+    if (btnOpenRevFromVerif) {
+      btnOpenRevFromVerif.onclick = () => FH.reviews.openModal(s);
+    }
+
     const editFromVerif = el.querySelector('#btn-edit-from-verif');
     if (editFromVerif) {
       editFromVerif.onclick = () => FH.spotModal.open(s);
@@ -267,6 +324,9 @@
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
             <h2 class="font-bold text-lg text-white truncate">${FH.esc(s.name)}</h2>
+            <button id="btn-write-review-header" type="button" class="text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 transition shrink-0 active:scale-95" title="Write a food review">
+              <i class="fa-solid fa-star text-amber-400"></i> Review Food
+            </button>
             <button id="btn-qr-spot-header" type="button" class="text-xs bg-[#0c233f] hover:bg-[#102d50] text-slate-200 border border-[#1b3d6a] hover:border-brand px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 transition shrink-0" title="Share cart / vendor QR code">
               <i class="fa-solid fa-qrcode"></i> QR
             </button>
@@ -299,6 +359,9 @@
         <!-- Verification & Confirmation Section -->
         <div id="verif-card"></div>
 
+        <!-- 1-5 star reviews + hygiene rating placed directly under verif-card -->
+        <div id="reviews"></div>
+
         <!-- Live Open / Closed status (vendor toggle) -->
         <div id="live-status"></div>
 
@@ -311,14 +374,16 @@
           <div id="dl"></div>
         </div>
 
-        <!-- 1-5 star reviews + hygiene rating -->
-        <div id="reviews"></div>
-
         <div id="chat"></div>
       </div>`;
 
     $('#detail').classList.add('open');
     $('#dx').onclick = () => FH.store.select(null);
+
+    const btnWriteReview = $('#btn-write-review-header');
+    if (btnWriteReview) {
+      btnWriteReview.onclick = () => FH.reviews.openModal(s);
+    }
 
     const btnEditHeader = $('#btn-edit-spot-header');
     if (btnEditHeader) {
@@ -337,6 +402,7 @@
 
     if (FH.gallery) FH.gallery.mount(s, $('#spot-gallery'));
     renderVerification(s, $('#verif-card'));
+    if (FH.reviews) FH.reviews.mount(s, $('#reviews'));
     if (FH.status) FH.status.mount(s, $('#live-status'));
     if (FH.reviews) FH.reviews.mount(s, $('#reviews'));
     FH.booking.mount(s, $('#bk'));
@@ -354,6 +420,7 @@
     head(s);
     if (FH.gallery) FH.gallery.mount(s, $('#spot-gallery'));
     renderVerification(s, $('#verif-card'));
+    if (FH.reviews) FH.reviews.mount(s, $('#reviews'));
     if (FH.status) FH.status.mount(s, $('#live-status'));
     FH.booking.mount(s, $('#bk'));
     FH.delivery.render(s, $('#dl'));

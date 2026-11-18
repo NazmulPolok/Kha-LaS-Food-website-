@@ -668,7 +668,7 @@
       layoutHtml = `
         <div class="flex items-start justify-between gap-2">
           <div class="flex flex-wrap items-center gap-1.5">
-            <span class="preset-tag text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
+            <span class="preset-tag keep-white text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
               <i class="fa-solid fa-fire-flame-curved mr-1"></i> ${esc(ad.highlightTag || 'SPECIAL')}
             </span>
             <span class="ad-timer-badge" data-ad-timer-id="${ad.id}">
@@ -700,7 +700,7 @@
                 <i class="fa-solid fa-ticket preset-accent"></i> ${esc(ad.promoCode)}
               </span>` : ''}
           </div>
-          <button type="button" class="preset-btn px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition" onclick="FH.adWall.viewOnMap('${esc(ad.spotId)}', '${esc(ad.spotName)}', '${esc(ad.spotArea)}')">
+          <button type="button" class="preset-btn keep-white px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition" onclick="FH.adWall.viewOnMap('${esc(ad.spotId)}', '${esc(ad.spotName)}', '${esc(ad.spotArea)}')">
             <i class="fa-solid fa-location-dot"></i> <span>View on Map</span>
           </button>
         </div>
@@ -710,7 +710,7 @@
       layoutHtml = `
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-1.5">
-            <span class="preset-tag text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow-sm">
+            <span class="preset-tag keep-white text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow-sm">
               ${esc(ad.highlightTag || 'DEAL')}
             </span>
             <span class="ad-timer-badge text-[10px]" data-ad-timer-id="${ad.id}">
@@ -738,7 +738,7 @@
                 <i class="fa-solid fa-ticket preset-accent"></i> ${esc(ad.promoCode)}
               </span>` : `<span class="text-[10px] opacity-60">${esc(ad.category)}</span>`}
           </div>
-          <button type="button" class="preset-btn px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition" onclick="FH.adWall.viewOnMap('${esc(ad.spotId)}', '${esc(ad.spotName)}', '${esc(ad.spotArea)}')">
+          <button type="button" class="preset-btn keep-white px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition" onclick="FH.adWall.viewOnMap('${esc(ad.spotId)}', '${esc(ad.spotName)}', '${esc(ad.spotArea)}')">
             <i class="fa-solid fa-location-dot text-[10px]"></i> <span>View</span>
           </button>
         </div>
@@ -748,7 +748,7 @@
       layoutHtml = `
         <div class="space-y-1.5">
           <div class="flex items-center justify-between gap-1">
-            <span class="preset-tag text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow-sm">
+            <span class="preset-tag keep-white text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow-sm">
               ${esc(ad.highlightTag || 'OFFER')}
             </span>
             <span class="ad-timer-badge text-[10px]" data-ad-timer-id="${ad.id}">
@@ -779,7 +779,7 @@
           <div class="text-[11px] font-bold text-white truncate">
             <i class="fa-solid fa-store text-brand text-[10px]"></i> ${esc(ad.spotName)}
           </div>
-          <button type="button" class="preset-btn w-full py-1.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition" onclick="FH.adWall.viewOnMap('${esc(ad.spotId)}', '${esc(ad.spotName)}', '${esc(ad.spotArea)}')">
+          <button type="button" class="preset-btn keep-white w-full py-1.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition" onclick="FH.adWall.viewOnMap('${esc(ad.spotId)}', '${esc(ad.spotName)}', '${esc(ad.spotArea)}')">
             <i class="fa-solid fa-location-dot"></i> <span>View on Map</span>
           </button>
         </div>
@@ -788,7 +788,7 @@
       // 1x1 Square Card
       layoutHtml = `
         <div class="flex items-center justify-between gap-1">
-          <span class="preset-tag text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded shadow-sm">
+          <span class="preset-tag keep-white text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded shadow-sm">
             ${esc(ad.highlightTag || 'FREE')}
           </span>
           <span class="ad-timer-badge text-[9px] px-1.5 py-0.2" data-ad-timer-id="${ad.id}">
@@ -807,7 +807,7 @@
 
         <div class="pt-1 border-t border-white/10 flex items-center justify-between gap-1">
           <span class="text-[9px] opacity-60 truncate">${esc(ad.spotArea || ad.category)}</span>
-          <button type="button" class="preset-btn px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 shadow-sm active:scale-95 transition" onclick="FH.adWall.viewOnMap('${esc(ad.spotId)}', '${esc(ad.spotName)}', '${esc(ad.spotArea)}')">
+          <button type="button" class="preset-btn keep-white px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 shadow-sm active:scale-95 transition" onclick="FH.adWall.viewOnMap('${esc(ad.spotId)}', '${esc(ad.spotName)}', '${esc(ad.spotArea)}')">
             <span>Map</span>
           </button>
         </div>

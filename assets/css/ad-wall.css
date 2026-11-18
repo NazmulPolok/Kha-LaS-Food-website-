@@ -375,3 +375,545 @@ input:checked + .admin-toggle-slider:before {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #f04e37;
 }
+
+
+/* ==========================================================
+   খাLaS — 24-Hour Free Ad Wall & Bento Grid Light Mode Theme
+   ========================================================== */
+
+[data-theme="light"] #btn-promo-wall {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
+[data-theme="light"] #btn-promo-wall:hover {
+  color: var(--brand) !important;
+  border-color: var(--brand) !important;
+}
+
+/* 1. Full-Screen Promo Wall Container */
+[data-theme="light"] #promoWallView {
+  background-color: var(--bg-main) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] #promoWallView > header {
+  background-color: var(--bg-header) !important;
+  border-color: var(--border-main) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] #promoWallView > header h2 {
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] #promoWallView > header p {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="light"] #promoWallView main {
+  background-color: var(--bg-main) !important;
+}
+
+[data-theme="light"] #btn-back-to-map {
+  background-color: #ffffff !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
+[data-theme="light"] #btn-back-to-map:hover {
+  border-color: var(--brand) !important;
+  color: var(--brand) !important;
+}
+
+[data-theme="light"] #btn-demo-fast-forward {
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+}
+[data-theme="light"] #btn-demo-fast-forward:hover {
+  background-color: #fef3c7 !important;
+  border-color: #f59e0b !important;
+}
+
+/* 2. Top Summary Bar (Occupancy vs Queue) */
+[data-theme="light"] #adWallSummaryBar {
+  background-color: #ffffff !important;
+  border-color: var(--border-main) !important;
+}
+
+[data-theme="light"] #adWallSummaryBar .bg-\[\#07192f\] {
+  background-color: #f1ede5 !important;
+  border-color: var(--border-strong) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] #adWallSummaryBar .bg-\[\#07192f\]\/80 {
+  background-color: #f8f6f2 !important;
+  border-color: var(--border-card) !important;
+}
+
+[data-theme="light"] #adWallSummaryBar .font-bold.text-slate-200 {
+  color: var(--text-main) !important;
+}
+
+[data-theme="light"] #adWallSummaryBar .text-slate-400 {
+  color: var(--text-sub) !important;
+}
+
+[data-theme="light"] #adWallSummaryBar .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+/* 3. Category Filter Tabs Row */
+[data-theme="light"] #promoWallView .bg-\[\#07192f\] {
+  background-color: var(--bg-header) !important;
+  border-color: var(--border-main) !important;
+}
+
+[data-theme="light"] #adWallCategoryTabs button:not(.bg-brand) {
+  background-color: #ffffff !important;
+  border-color: var(--border-card) !important;
+  color: #334155 !important;
+}
+
+[data-theme="light"] #adWallCategoryTabs button:not(.bg-brand):hover {
+  background-color: #fff6f2 !important;
+  border-color: var(--brand) !important;
+  color: var(--brand) !important;
+}
+
+[data-theme="light"] #adWallCategoryTabs button:not(.bg-brand) span:last-child {
+  background-color: #f1ede5 !important;
+  color: #475569 !important;
+}
+
+/* 4. The 6 Banner Presets in Light Mode */
+
+/* 1. Fire Discount (Light Mode) */
+[data-theme="light"] .preset-fire {
+  background: radial-gradient(circle at 90% 10%, rgba(240, 78, 55, 0.14) 0%, transparent 60%),
+              linear-gradient(135deg, #ffffff 0%, #fff5f3 50%, #ffedea 100%) !important;
+  border-color: #f87171 !important;
+  color: #7f1d1d !important;
+  box-shadow: 0 4px 16px rgba(240, 78, 55, 0.12) !important;
+}
+[data-theme="light"] .preset-fire:hover {
+  border-color: #f04e37 !important;
+  box-shadow: 0 8px 24px rgba(240, 78, 55, 0.22) !important;
+}
+[data-theme="light"] .preset-fire h3,
+[data-theme="light"] .preset-fire h4 {
+  color: #7f1d1d !important;
+}
+[data-theme="light"] .preset-fire p {
+  color: #9a3412 !important;
+}
+[data-theme="light"] .preset-fire .preset-accent {
+  color: #c2410c !important;
+}
+[data-theme="light"] .preset-fire .preset-tag {
+  color: #ffffff !important;
+}
+[data-theme="light"] .preset-fire .preset-btn {
+  background-color: #f04e37 !important;
+  color: #ffffff !important;
+}
+[data-theme="light"] .preset-fire .preset-btn:hover {
+  background-color: #ff5a43 !important;
+}
+[data-theme="light"] .preset-fire .ad-timer-badge {
+  background: #ffffff !important;
+  border-color: #fca5a5 !important;
+  color: #991b1b !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .preset-fire .ad-code-badge {
+  background: #fff1f0 !important;
+  border-color: #f87171 !important;
+  color: #9a3412 !important;
+}
+[data-theme="light"] .preset-fire .border-white\/10 {
+  border-color: rgba(240, 78, 55, 0.2) !important;
+}
+
+/* 2. Royal Biryani Gold (Light Mode) */
+[data-theme="light"] .preset-gold {
+  background: radial-gradient(circle at 90% 10%, rgba(245, 158, 11, 0.18) 0%, transparent 60%),
+              linear-gradient(135deg, #ffffff 0%, #fffdf0 50%, #fef3c7 100%) !important;
+  border-color: #f59e0b !important;
+  color: #78350f !important;
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.14) !important;
+}
+[data-theme="light"] .preset-gold:hover {
+  border-color: #d97706 !important;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25) !important;
+}
+[data-theme="light"] .preset-gold h3,
+[data-theme="light"] .preset-gold h4 {
+  color: #78350f !important;
+}
+[data-theme="light"] .preset-gold p {
+  color: #92400e !important;
+}
+[data-theme="light"] .preset-gold .preset-accent {
+  color: #b45309 !important;
+}
+[data-theme="light"] .preset-gold .preset-tag {
+  color: #000000 !important;
+}
+[data-theme="light"] .preset-gold .preset-btn {
+  background-color: #f59e0b !important;
+  color: #000000 !important;
+}
+[data-theme="light"] .preset-gold .preset-btn:hover {
+  background-color: #fbbf24 !important;
+}
+[data-theme="light"] .preset-gold .ad-timer-badge {
+  background: #ffffff !important;
+  border-color: #fcd34d !important;
+  color: #78350f !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .preset-gold .ad-code-badge {
+  background: #fefce8 !important;
+  border-color: #f59e0b !important;
+  color: #78350f !important;
+}
+[data-theme="light"] .preset-gold .border-white\/10 {
+  border-color: rgba(217, 119, 6, 0.2) !important;
+}
+
+/* 3. Midnight Street Neon (Light Mode) */
+[data-theme="light"] .preset-neon {
+  background: radial-gradient(circle at 90% 10%, rgba(6, 182, 212, 0.16) 0%, transparent 60%),
+              radial-gradient(circle at 10% 90%, rgba(168, 85, 247, 0.12) 0%, transparent 60%),
+              linear-gradient(135deg, #ffffff 0%, #f6f3ff 50%, #ede8fe 100%) !important;
+  border-color: #a78bfa !important;
+  color: #3b0764 !important;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.14) !important;
+}
+[data-theme="light"] .preset-neon:hover {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25) !important;
+}
+[data-theme="light"] .preset-neon h3,
+[data-theme="light"] .preset-neon h4 {
+  color: #3b0764 !important;
+}
+[data-theme="light"] .preset-neon p {
+  color: #581c87 !important;
+}
+[data-theme="light"] .preset-neon .preset-accent {
+  color: #0891b2 !important;
+}
+[data-theme="light"] .preset-neon .preset-tag {
+  color: #ffffff !important;
+}
+[data-theme="light"] .preset-neon .preset-btn {
+  background-color: #06b6d4 !important;
+  color: #041019 !important;
+}
+[data-theme="light"] .preset-neon .preset-btn:hover {
+  background-color: #22d3ee !important;
+}
+[data-theme="light"] .preset-neon .ad-timer-badge {
+  background: #ffffff !important;
+  border-color: #c4b5fd !important;
+  color: #4c1d95 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .preset-neon .ad-code-badge {
+  background: #f5f3ff !important;
+  border-color: #a78bfa !important;
+  color: #4c1d95 !important;
+}
+[data-theme="light"] .preset-neon .border-white\/10 {
+  border-color: rgba(139, 92, 246, 0.2) !important;
+}
+
+/* 4. Fresh Combo Emerald (Light Mode) */
+[data-theme="light"] .preset-emerald {
+  background: radial-gradient(circle at 90% 10%, rgba(16, 185, 129, 0.16) 0%, transparent 60%),
+              linear-gradient(135deg, #ffffff 0%, #f0fdf4 50%, #dcfce7 100%) !important;
+  border-color: #34d399 !important;
+  color: #064e3b !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.14) !important;
+}
+[data-theme="light"] .preset-emerald:hover {
+  border-color: #10b981 !important;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25) !important;
+}
+[data-theme="light"] .preset-emerald h3,
+[data-theme="light"] .preset-emerald h4 {
+  color: #064e3b !important;
+}
+[data-theme="light"] .preset-emerald p {
+  color: #065f46 !important;
+}
+[data-theme="light"] .preset-emerald .preset-accent {
+  color: #059669 !important;
+}
+[data-theme="light"] .preset-emerald .preset-tag {
+  color: #ffffff !important;
+}
+[data-theme="light"] .preset-emerald .preset-btn {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+}
+[data-theme="light"] .preset-emerald .preset-btn:hover {
+  background-color: #34d399 !important;
+}
+[data-theme="light"] .preset-emerald .ad-timer-badge {
+  background: #ffffff !important;
+  border-color: #6ee7b7 !important;
+  color: #064e3b !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .preset-emerald .ad-code-badge {
+  background: #f0fdf4 !important;
+  border-color: #34d399 !important;
+  color: #064e3b !important;
+}
+[data-theme="light"] .preset-emerald .border-white\/10 {
+  border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+/* 5. Grand Opening Crimson (Light Mode) */
+[data-theme="light"] .preset-crimson {
+  background: radial-gradient(circle at 90% 10%, rgba(244, 63, 94, 0.16) 0%, transparent 60%),
+              linear-gradient(135deg, #ffffff 0%, #fff1f2 50%, #ffe4e6 100%) !important;
+  border-color: #fb7185 !important;
+  color: #881337 !important;
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.14) !important;
+}
+[data-theme="light"] .preset-crimson:hover {
+  border-color: #f43f5e !important;
+  box-shadow: 0 8px 24px rgba(244, 63, 94, 0.25) !important;
+}
+[data-theme="light"] .preset-crimson h3,
+[data-theme="light"] .preset-crimson h4 {
+  color: #881337 !important;
+}
+[data-theme="light"] .preset-crimson p {
+  color: #9f1239 !important;
+}
+[data-theme="light"] .preset-crimson .preset-accent {
+  color: #e11d48 !important;
+}
+[data-theme="light"] .preset-crimson .preset-tag {
+  color: #ffffff !important;
+}
+[data-theme="light"] .preset-crimson .preset-btn {
+  background-color: #f43f5e !important;
+  color: #ffffff !important;
+}
+[data-theme="light"] .preset-crimson .preset-btn:hover {
+  background-color: #fb7185 !important;
+}
+[data-theme="light"] .preset-crimson .ad-timer-badge {
+  background: #ffffff !important;
+  border-color: #fda4af !important;
+  color: #881337 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .preset-crimson .ad-code-badge {
+  background: #fff1f2 !important;
+  border-color: #fb7185 !important;
+  color: #881337 !important;
+}
+[data-theme="light"] .preset-crimson .border-white\/10 {
+  border-color: rgba(244, 63, 94, 0.2) !important;
+}
+
+/* 6. Deshi Cart Classic (Light Mode) */
+[data-theme="light"] .preset-deshi {
+  background: radial-gradient(circle at 90% 10%, rgba(217, 119, 6, 0.16) 0%, transparent 60%),
+              linear-gradient(135deg, #ffffff 0%, #fffbeb 50%, #fef3c7 100%) !important;
+  border-color: #fb923c !important;
+  color: #7c2d12 !important;
+  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.14) !important;
+}
+[data-theme="light"] .preset-deshi:hover {
+  border-color: #ea580c !important;
+  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.25) !important;
+}
+[data-theme="light"] .preset-deshi h3,
+[data-theme="light"] .preset-deshi h4 {
+  color: #7c2d12 !important;
+}
+[data-theme="light"] .preset-deshi p {
+  color: #9a3412 !important;
+}
+[data-theme="light"] .preset-deshi .preset-accent {
+  color: #c2410c !important;
+}
+[data-theme="light"] .preset-deshi .preset-tag {
+  color: #ffffff !important;
+}
+[data-theme="light"] .preset-deshi .preset-btn {
+  background-color: #ea580c !important;
+  color: #ffffff !important;
+}
+[data-theme="light"] .preset-deshi .preset-btn:hover {
+  background-color: #f97316 !important;
+}
+[data-theme="light"] .preset-deshi .ad-timer-badge {
+  background: #ffffff !important;
+  border-color: #fdba74 !important;
+  color: #7c2d12 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .preset-deshi .ad-code-badge {
+  background: #fff7ed !important;
+  border-color: #fb923c !important;
+  color: #7c2d12 !important;
+}
+[data-theme="light"] .preset-deshi .border-white\/10 {
+  border-color: rgba(234, 88, 12, 0.2) !important;
+}
+
+/* Card Internal Badges in Light Mode */
+[data-theme="light"] .ad-card .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .ad-card .bg-black\/40 {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #475569 !important;
+}
+[data-theme="light"] .ad-card .text-slate-200\/90,
+[data-theme="light"] .ad-card .text-slate-200\/80 {
+  color: #475569 !important;
+}
+[data-theme="light"] .ad-card .opacity-75,
+[data-theme="light"] .ad-card .opacity-60 {
+  opacity: 0.9 !important;
+}
+
+/* 5. Admin Console in Light Mode */
+[data-theme="light"] #adminView {
+  background-color: var(--bg-main) !important;
+  color: var(--text-main) !important;
+}
+[data-theme="light"] #adminView > header {
+  background-color: var(--bg-header) !important;
+  border-color: var(--border-main) !important;
+}
+[data-theme="light"] #adminView > header h2 {
+  color: var(--text-main) !important;
+}
+[data-theme="light"] #adminView > header p {
+  color: var(--text-muted) !important;
+}
+[data-theme="light"] #adminView > div.bg-\[\#091f3a\] {
+  background-color: #ffffff !important;
+  border-color: var(--border-main) !important;
+}
+[data-theme="light"] #adminView main {
+  background-color: var(--bg-main) !important;
+}
+[data-theme="light"] #adminView .bg-\[\#0c233f\] {
+  background-color: #ffffff !important;
+  border-color: var(--border-main) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+[data-theme="light"] #adminView .bg-\[\#07192f\] {
+  background-color: #f8f6f2 !important;
+  border-color: var(--border-main) !important;
+}
+[data-theme="light"] #adminView .border-\[\#14355f\] {
+  border-color: var(--border-main) !important;
+}
+[data-theme="light"] #adminView .border-\[\#1b3d6a\] {
+  border-color: var(--border-card) !important;
+}
+[data-theme="light"] #adminView table thead {
+  background-color: #f1ede5 !important;
+  color: #475569 !important;
+}
+[data-theme="light"] #adminView tr:hover {
+  background-color: #fff6f2 !important;
+}
+[data-theme="light"] #adminView table td {
+  border-color: var(--border-card) !important;
+}
+[data-theme="light"] #adminView .text-white {
+  color: var(--text-main) !important;
+}
+[data-theme="light"] #adminView .text-slate-200,
+[data-theme="light"] #adminView .text-slate-300 {
+  color: var(--text-sub) !important;
+}
+[data-theme="light"] #adminView .text-slate-400 {
+  color: var(--text-muted) !important;
+}
+[data-theme="light"] #adminView button[data-admin-tab]:not(.bg-brand) {
+  background-color: #ffffff !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-sub) !important;
+}
+[data-theme="light"] #adminView button[data-admin-tab]:not(.bg-brand) span[id] {
+  background-color: #f1ede5 !important;
+  color: var(--text-main) !important;
+}
+[data-theme="light"] .admin-toggle-slider {
+  background-color: #cbd5e1;
+  border-color: #94a3b8;
+}
+[data-theme="light"] input:checked + .admin-toggle-slider {
+  background-color: #059669;
+  border-color: #10b981;
+}
+
+/* 6. Post Ad Modal in Light Mode */
+[data-theme="light"] #modal > div {
+  background-color: #ffffff !important;
+  border-color: var(--border-main) !important;
+}
+[data-theme="light"] #modal .bg-\[\#07192f\] {
+  background-color: #f8f6f2 !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
+[data-theme="light"] #modal .bg-\[\#0c233f\] {
+  background-color: #ffffff !important;
+  border-color: var(--border-main) !important;
+}
+[data-theme="light"] #modal .border-\[\#14355f\] {
+  border-color: var(--border-main) !important;
+}
+[data-theme="light"] #modal .border-\[\#1b3d6a\] {
+  border-color: var(--border-strong) !important;
+}
+[data-theme="light"] #modal input:not([type="radio"]),
+[data-theme="light"] #modal select,
+[data-theme="light"] #modal textarea {
+  background-color: #ffffff !important;
+  border-color: var(--border-strong) !important;
+  color: #0f172a !important;
+}
+[data-theme="light"] #modal .text-white {
+  color: var(--text-main) !important;
+}
+[data-theme="light"] #modal .text-slate-200,
+[data-theme="light"] #modal .text-slate-300 {
+  color: var(--text-sub) !important;
+}
+[data-theme="light"] #modal .text-slate-400 {
+  color: var(--text-muted) !important;
+}
+[data-theme="light"] #modal label .peer:checked + div {
+  background-color: #fff6f2 !important;
+  border-color: var(--brand) !important;
+}
+
+/* 7. Scrollbars in Light Mode */
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--scrollbar-track) !important;
+}
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb) !important;
+}
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--brand) !important;
+}

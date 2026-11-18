@@ -27,7 +27,7 @@
         <div class="flex flex-wrap gap-3 text-xs text-slate-300 pt-2 border-t border-[#14355f]">
           <label class="flex items-center gap-1.5 cursor-pointer hover:text-white"><input id="fd" type="checkbox" class="accent-brand rounded"> Delivery</label>
           <label class="flex items-center gap-1.5 cursor-pointer hover:text-white"><input id="fb" type="checkbox" class="accent-brand rounded"> Booking</label>
-          <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-emerald-400 hover:text-emerald-300"><input id="fv" type="checkbox" class="accent-brand rounded"> <i class="fa-solid fa-certificate"></i> Verified (25+)</label>
+          <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-emerald-400 hover:text-emerald-300" title="ম্যাপে বাস্তবেই আছে কি না তা ২৫+ জন স্থানীয় ব্যবহারকারী নিশ্চিত করেছেন (Ground Presence)"><input id="fv" type="checkbox" class="accent-brand rounded"> <i class="fa-solid fa-location-dot"></i> Confirmed Spot (25+)</label>
         </div>`;
 
       const set = p => FH.store.setFilter(p), $ = s => el.querySelector(s);

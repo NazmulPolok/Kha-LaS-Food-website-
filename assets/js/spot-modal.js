@@ -278,10 +278,78 @@
               <textarea id="new-spot-about" rows="2" placeholder="Tell what this spot is known for, best dishes, seating atmosphere..." class="w-full px-3 py-2 border border-[#1b3d6a] bg-[#0c233f] text-white rounded-xl text-sm focus:border-brand focus:outline-none">${isEdit ? FH.esc(editSpot.about) : ''}</textarea>
             </div>
 
+            <!-- 1. GROUND PRESENCE CONFIRMATION & GROUND RATING -->
+            <div class="fh-verif-box p-3.5 bg-[#0c233f] rounded-xl border border-emerald-500/30 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-map-location-dot text-emerald-400"></i> Ground Presence Confirmation
+                </span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
+                  Location Only
+                </span>
+              </div>
+
+              <p class="text-xs text-slate-200 leading-relaxed italic bg-[#07192f] p-2.5 rounded-lg border border-[#1b3d6a]">
+                "Note: This ground confirmation is strictly to verify that the spot is in the 100% correct physical location on the map so users can find it in person."
+              </p>
+
+              <label class="flex items-center gap-2 cursor-pointer pt-0.5">
+                <input id="new-spot-confirm-location" type="checkbox" checked required class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+                <span class="text-xs font-semibold text-emerald-300">I confirm this spot physically exists at this exact 100% accurate location.</span>
+              </label>
+
+              <!-- Live Ground Presence Rating (tied to 25 community confirmations) -->
+              <div class="p-3 rounded-xl bg-[#07192f] border border-[#1b3d6a] space-y-2">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <i class="fa-solid fa-award text-amber-400"></i>
+                      <span>Ground Presence Rating (বাস্তব উপস্থিতি রেটিং)</span>
+                    </span>
+                    <span class="text-[10px] text-slate-400 block mt-0.5">ম্যাপে ২৫ জন লোকাল ইউজারের কনফার্মেশনের উপর ভিত্তি করে নির্ধারিত</span>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-base font-black text-amber-400 font-mono">
+                      ${isEdit ? Math.min(10, Math.round(((editSpot.confirmations || []).length / 25) * 10 * 10) / 10).toFixed(1) : '0.4'}
+                      <span class="text-xs text-slate-400 font-medium font-sans">/ 10.0</span>
+                    </div>
+                    <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40">
+                      ${isEdit ? (editSpot.confirmations || []).length : 1}/25 Confirmed
+                    </span>
+                  </div>
+                </div>
+
+                <div class="w-full bg-[#143054] h-2 rounded-full overflow-hidden">
+                  <div class="bg-gradient-to-r from-amber-500 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: ${isEdit ? Math.min(100, Math.round(((editSpot.confirmations || []).length / 25) * 100)) : 4}%"></div>
+                </div>
+
+                <p class="text-[11px] text-slate-300 leading-relaxed">
+                  <i class="fa-solid fa-circle-info text-emerald-400 mr-1"></i>
+                  <b>সর্বনিম্ন ২৫ জনের কনফার্মেশন কোটা:</b> স্পট তৈরি করলে আপনার ১ম কনফার্মেশন দিয়ে রেটিং <b>০.৪/১০.০</b> দিয়ে শুরু হবে। অন্যান্য স্থানীয় ভোজনরসিকরা বাস্তবে দোকানটি দেখে কনফার্ম করলে রেটিং বেড়ে সর্বোচ্চ <b>১০.০/১০.০ ফুল ভেরিফাইড</b> রেটিং পাবে।
+                </p>
+              </div>
+            </div>
+
+            <!-- 2. Separate Food & Hygiene Reviews Notice -->
+            <div class="p-3 bg-[#0c233f] rounded-xl border border-[#1b3d6a] flex items-center justify-between gap-3 text-xs">
+              <div class="flex items-start gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <i class="fa-solid fa-utensils text-sm"></i>
+                </div>
+                <div>
+                  <span class="font-bold text-white block">Food Quality & Hygiene Reviews (খাবারের আলাদা রিভিউ)</span>
+                  <p class="text-[11px] text-slate-300 mt-0.5">খাবারের রিভিউ ও রেটিং লোকেশন চেকের অন্তর্ভুক্ত নয়। স্পট পাবলিশ হওয়ার পর স্পট ড্রয়ারের <b>"Write Food Review"</b> বাটন থেকে স্টার রেটিং ও রিভিউ দেওয়া যাবে।</p>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-amber-300 bg-amber-950/60 border border-amber-500/40 px-2 py-1 rounded-md shrink-0">
+                Separate Review
+              </span>
+            </div>
+
             <div class="bg-amber-950/40 border border-amber-500/30 rounded-xl p-3 text-xs text-amber-300 flex items-start gap-2">
               <i class="fa-solid fa-circle-info text-amber-600 mt-0.5"></i>
               <div>
-                <b>Verification Policy:</b> Requires <b>at least 25 community confirmations (lower limit)</b> from registered users to receive the official "Community Verified" badge. There is <b>no upper limit</b>.
+                <b>25+ Location Verification Rule:</b> Requires <b>at least 25 community confirmations</b> from local users to confirm ground existence and receive the "Spot Confirmed" badge.
               </div>
             </div>
 
@@ -582,7 +650,8 @@
             food: Array.from(selectedFoods),
             type,
             rating: 8.5,
-            reviews: 1,
+            reviews: 0,
+            hygiene: null,
             price,
             token: 0,
             delivery,
@@ -591,7 +660,7 @@
             phone,
             about,
             creator: user.email,
-            confirmations: [user.email], // Creator is the first confirmation
+            confirmations: [user.email], // Creator is the first ground confirmation (1/25)
             photos: [...spotPhotos],
             createdAt: Date.now(),
             foodpanda: 'https://www.foodpanda.com.bd/',
@@ -601,7 +670,7 @@
           FH.store.addSpot(newSpot);
           closeSelf();
           const threshold = FH.VERIFIED_THRESHOLD || 25;
-          FH.toast(`Spot "${name}" added! Confirmed by you (1/${threshold}).`);
+          FH.toast(`Spot "${name}" added! Ground location confirmed (1/${threshold}).`);
           FH.map.focus(newSpot);
         }
       };
