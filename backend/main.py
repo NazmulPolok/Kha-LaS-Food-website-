@@ -255,6 +255,10 @@ app = FastAPI(title="Kha-LaS API", version="1.0.0", docs_url="/api/docs", redoc_
 def home(): return FileResponse(ROOT / "index.html")
 
 
+@app.get("/admin", include_in_schema=False)
+def admin(): return FileResponse(ROOT / "index.html")
+
+
 @app.get("/manifest.json", include_in_schema=False)
 def manifest(): return FileResponse(ROOT / "manifest.json")
 

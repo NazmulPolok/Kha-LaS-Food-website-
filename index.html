@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link rel="stylesheet" href="assets/css/styles.css?v=4">
+<link rel="stylesheet" href="assets/css/ad-wall.css?v=1">
 </head>
 <body class="h-screen flex flex-col overflow-hidden bg-[#07192f] text-slate-100 selection:bg-brand selection:text-white" data-theme="dark">
 <header class="bg-[#07192f] border-b border-[#14355f] px-3 md:px-4 py-2 flex items-center justify-between gap-2.5 md:gap-3 shadow-md z-20">
@@ -46,6 +47,13 @@
     <button id="btn-theme-toggle" type="button" class="flex items-center gap-1.5 border border-[#14355f] bg-[#0c233f] text-slate-200 hover:text-brand hover:border-brand text-xs font-semibold px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl transition shadow-sm" title="Switch Theme (Dark / Light)" aria-label="Switch Theme">
       <span id="theme-toggle-icon">🌙</span>
       <span id="theme-toggle-text" class="hidden sm:inline">Dark</span>
+    </button>
+
+    <!-- Free Ad Wall Button -->
+    <button id="btn-promo-wall" type="button" onclick="FH.adWall.openPromoWall()" class="flex items-center gap-1.5 border border-[#14355f] bg-[#0c233f] text-slate-200 hover:text-brand hover:border-brand text-xs font-semibold px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl transition shadow-sm" title="Open 24-Hour Free Ad Wall & Promo Board">
+      <i class="fa-solid fa-fire-flame-curved text-brand"></i>
+      <span class="font-bold">Free Ad Wall</span>
+      <span class="bg-brand text-white keep-white px-1.5 py-0.2 rounded-full text-[10px] font-bold">24h</span>
     </button>
 
     <button id="btn-add-spot" type="button" title="Add a new food spot" class="flex items-center gap-1.5 bg-brand hover:bg-brand-hover active:scale-95 text-white keep-white text-xs md:text-sm font-bold px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl shadow-lg shadow-brand/25 transition">
@@ -126,6 +134,137 @@
 <div id="modal" class="hidden fixed inset-0 z-[2000] bg-black/75 backdrop-blur-sm items-center justify-center p-4"></div>
 <div id="toast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-[3000] bg-[#0c233f] border border-[#1b4376] text-white text-sm font-semibold px-4 py-2.5 rounded-full shadow-2xl" role="status"></div>
 
+<!-- Full-Screen Free Ad Wall View -->
+<div id="promoWallView" class="hidden fixed inset-0 z-[1600] flex flex-col bg-[#07192f] text-slate-100 overflow-hidden">
+  <!-- Top Navigation Header -->
+  <header class="bg-[#07192f] border-b border-[#14355f] px-3.5 md:px-6 py-2.5 flex items-center justify-between gap-3 shadow-md z-20 shrink-0">
+    <div class="flex items-center gap-3">
+      <button id="btn-back-to-map" type="button" onclick="FH.adWall.closePromoWall()" class="flex items-center gap-2 border border-[#14355f] bg-[#0c233f] text-white hover:text-brand hover:border-brand px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl text-xs font-bold transition shadow-sm active:scale-95" title="Return to Live Food Map">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back to Live Map</span>
+      </button>
+
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-brand text-white flex items-center justify-center font-black shadow-lg shadow-brand/30">
+          <i class="fa-solid fa-bullhorn text-sm"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="font-black text-base md:text-xl text-white tracking-tight leading-tight">24-Hour Free Ad Wall</h2>
+            <span class="hidden sm:inline-flex items-center gap-1 bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> LIVE ROTATION
+            </span>
+          </div>
+          <p class="text-[10px] md:text-[11px] text-slate-400 leading-none hidden md:block">Dhaka roadside carts & food spots free promo board • 24h automatic FIFO slot rotation</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 md:gap-3">
+      <!-- Demo Expiry Fast-Forward Trigger -->
+      <button id="btn-demo-fast-forward" type="button" onclick="FH.adWall.fastForwardExpiry()" class="flex items-center gap-1.5 border border-amber-500/50 bg-amber-950/40 hover:bg-amber-900/50 text-amber-300 text-xs font-bold px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl transition shadow-sm active:scale-95" title="Fast-forward nearest live ad by 24 hours to verify auto-expiry and queue rotation">
+        <i class="fa-solid fa-forward-fast text-amber-400"></i>
+        <span class="hidden sm:inline">Demo:</span> <span>+24h Expiry</span>
+      </button>
+
+      <!-- Post Free Ad CTA Button -->
+      <button id="btn-post-ad" type="button" onclick="FH.adWall.openSubmitModal()" class="flex items-center gap-1.5 bg-brand hover:bg-brand-hover active:scale-95 text-white keep-white text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-xl shadow-lg shadow-brand/30 transition">
+        <i class="fa-solid fa-plus-circle"></i>
+        <span>Post Free Ad</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Compact Top Summary Bar: Occupancy vs. Queue -->
+  <div id="adWallSummaryBar" class="bg-[#091f3a] border-b border-[#14355f] px-4 md:px-6 py-2 shrink-0"></div>
+
+  <!-- Filter Category Tabs -->
+  <div class="bg-[#07192f] border-b border-[#14355f]/60 px-4 md:px-6 py-2.5 flex items-center justify-between gap-3 overflow-x-auto shrink-0 custom-scrollbar">
+    <div id="adWallCategoryTabs" class="flex items-center gap-1.5 md:gap-2"></div>
+    <div class="text-[11px] text-slate-400 hidden lg:flex items-center gap-1 shrink-0">
+      <i class="fa-solid fa-circle-info text-brand"></i>
+      <span>6-Column Bento Grid • Max 28 Live Slots</span>
+    </div>
+  </div>
+
+  <!-- Bento Grid Viewport -->
+  <main class="flex-1 overflow-y-auto p-3.5 md:p-6 custom-scrollbar bg-[#051326]">
+    <div id="adBentoGrid" class="ad-bento-grid max-w-7xl mx-auto pb-12"></div>
+  </main>
+</div>
+
+<!-- Private Admin Console View (#/admin or /admin) -->
+<div id="adminView" class="hidden fixed inset-0 z-[1700] flex flex-col bg-[#07192f] text-slate-100 overflow-hidden">
+  <!-- Admin Header -->
+  <header class="bg-[#07192f] border-b border-[#14355f] px-4 md:px-6 py-3 flex items-center justify-between gap-3 shadow-md z-20 shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-rose-600 text-white flex items-center justify-center font-black shadow-lg shadow-rose-600/30">
+        <i class="fa-solid fa-shield-halved text-base"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h2 class="font-black text-base md:text-lg text-white tracking-tight leading-tight">Admin Moderation & Ad Queue Engine</h2>
+          <span class="bg-rose-950/80 border border-rose-500/50 text-rose-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Private Route</span>
+        </div>
+        <p class="text-[11px] text-slate-400 leading-none mt-0.5 hidden sm:block">Control 24h approval lifecycle, slot capacities, force expirations, and FIFO queue rotation</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 md:gap-3">
+      <button type="button" onclick="FH.adWall.resetSampleSeed()" class="flex items-center gap-1.5 border border-[#14355f] bg-[#0c233f] text-slate-300 hover:text-white px-3 py-1.5 md:py-2 rounded-xl text-xs font-semibold transition" title="Restore realistic sample ads for demonstration">
+        <i class="fa-solid fa-rotate text-brand"></i>
+        <span class="hidden sm:inline">Reset Sample Data</span>
+      </button>
+
+      <button id="btn-admin-back" type="button" onclick="FH.adWall.closeAdmin()" class="flex items-center gap-2 border border-[#14355f] bg-[#0c233f] text-white hover:text-brand hover:border-brand px-3.5 py-1.5 md:py-2 rounded-xl text-xs font-bold transition shadow-sm active:scale-95" title="Exit Admin Console and Return to Public Map Site">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back to Public Site</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Global Settings & Tab Toolbar -->
+  <div class="bg-[#091f3a] border-b border-[#14355f] px-4 md:px-6 py-3 shrink-0 flex flex-wrap items-center justify-between gap-4">
+    <!-- Global Approval Setting Switch -->
+    <div class="flex items-center gap-3">
+      <span class="text-xs font-bold text-white flex items-center gap-1.5">
+        <i class="fa-solid fa-sliders text-brand"></i> Approval Policy:
+      </span>
+      <label class="admin-toggle-switch">
+        <input type="checkbox" id="adminAutoApproveToggle" onchange="FH.adWall.toggleAutoApprove(this.checked)">
+        <span class="admin-toggle-slider"></span>
+      </label>
+      <div id="adminModeBadge"></div>
+    </div>
+
+    <!-- Admin Tabs -->
+    <div class="flex items-center gap-2">
+      <button type="button" data-admin-tab="pending" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-brand text-white shadow-md shadow-brand/25 transition flex items-center gap-1.5" onclick="FH.adWall.setAdminTab('pending')">
+        <i class="fa-solid fa-inbox"></i>
+        <span>Pending Approvals</span>
+        <span id="adminPendingBadge" class="bg-black/30 text-white text-[10px] px-1.5 py-0.2 rounded-full">0</span>
+      </button>
+
+      <button type="button" data-admin-tab="live" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-[#0c233f] border border-[#14355f] transition flex items-center gap-1.5" onclick="FH.adWall.setAdminTab('live')">
+        <i class="fa-solid fa-satellite-dish text-emerald-400"></i>
+        <span>Live Ads Manager</span>
+        <span id="adminLiveBadge" class="bg-[#07192f] text-slate-300 text-[10px] px-1.5 py-0.2 rounded-full">0/28</span>
+      </button>
+
+      <button type="button" data-admin-tab="queue" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-[#0c233f] border border-[#14355f] transition flex items-center gap-1.5" onclick="FH.adWall.setAdminTab('queue')">
+        <i class="fa-solid fa-layer-group text-amber-400"></i>
+        <span>Waiting Queue</span>
+        <span id="adminQueueBadge" class="bg-[#07192f] text-slate-300 text-[10px] px-1.5 py-0.2 rounded-full">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Admin Viewport Content -->
+  <main class="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar bg-[#051326]">
+    <div id="adminTabContent" class="max-w-6xl mx-auto pb-12"></div>
+  </main>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="assets/js/config.js"></script>
 <script src="assets/js/store.js"></script>
@@ -146,6 +285,7 @@
 <script src="assets/js/crowdsource.js?v=2"></script>
 <script src="assets/js/pwa.js"></script>
 <script src="assets/js/spot-modal.js?v=4"></script>
+<script src="assets/js/ad-wall.js?v=1"></script>
 <script src="assets/js/app.js?v=7"></script>
 </body>
 </html>
