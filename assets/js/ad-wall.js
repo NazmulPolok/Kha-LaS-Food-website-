@@ -620,7 +620,7 @@
     // Expire it now
     target.expiresAt = Date.now() - 1000;
     if (FH.toast) {
-      FH.toast(`⚡ Fast-forwarding: Expiring "${target.headline}" (${target.blockSize})...`);
+      FH.toast(`Expiring "${target.headline}" (${target.blockSize})...`);
     }
     checkExpirations();
   }
@@ -1500,20 +1500,20 @@
         newAd.approvedAt = now;
         newAd.expiresAt = now + 24 * 3600 * 1000;
         liveAds.push(newAd);
-        if (FH.toast) FH.toast(`🎉 Your free 24h ad is now LIVE on the board!`);
+        if (FH.toast) FH.toast(`Your free 24h ad is now LIVE on the board!`);
       } else {
         newAd.status = 'QUEUED';
         newAd.approvedAt = now;
         newAd.queuedAt = now;
         queuedAds.push(newAd);
         const queuePos = queuedAds.filter(q => q.blockSize === blockSize).length;
-        if (FH.toast) FH.toast(`⏳ All ${blockSize} live slots are full. Placed at #${queuePos} in the waiting queue!`);
+        if (FH.toast) FH.toast(`All ${blockSize} live slots are full. Placed at #${queuePos} in the waiting queue!`);
       }
     } else {
       // Manual Admin Moderation Required
       newAd.status = 'PENDING_APPROVAL';
       pendingAds.push(newAd);
-      if (FH.toast) FH.toast(`📋 Ad submitted! It has entered the private Admin Moderation Queue.`);
+      if (FH.toast) FH.toast(`Ad submitted! It has entered the private Admin Moderation Queue.`);
     }
 
     saveState();
@@ -1528,7 +1528,7 @@
     saveState();
     renderAdmin();
     if (FH.toast) {
-      FH.toast(autoApproveSetting ? '⚡ Approval Mode: Auto-Publish (Skip Approval) ON' : '🛡️ Approval Mode: Require Admin Approval ON');
+      FH.toast(autoApproveSetting ? 'Approval Mode: Auto-Publish (Skip Approval) ON' : 'Approval Mode: Require Admin Approval ON');
     }
   }
 
@@ -1691,7 +1691,7 @@
 
     // Custom spot or unmapped spot
     if (FH.toast) {
-      FH.toast(`📍 ${spotName} (${spotArea}) — Roadside spot in Dhaka`);
+      FH.toast(`${spotName} (${spotArea}) — Roadside spot in Dhaka`);
     }
   }
 
@@ -1699,7 +1699,7 @@
   function copyCode(code) {
     if (!code) return;
     navigator.clipboard.writeText(code).then(() => {
-      if (FH.toast) FH.toast(`📋 Copied promo code: ${code}`);
+      if (FH.toast) FH.toast(`Copied promo code: ${code}`);
     }).catch(() => {
       if (FH.toast) FH.toast(`Code: ${code}`);
     });

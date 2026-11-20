@@ -100,7 +100,7 @@
         FH.store.save();
         FH.store.emit();
 
-        FH.toast(next === 'open' ? '🟢 Cart marked Open — customers can see it live.' : '🔴 Cart marked Closed.');
+        FH.toast(next === 'open' ? 'Cart marked Open — customers can see it live.' : 'Cart marked Closed.');
 
         if (FH.db && FH.db.enabled) {
           try {

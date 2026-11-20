@@ -13,30 +13,30 @@
   let cache = null;
 
   const FOOD_TAGS = [
-    '🔥 Must Try',
-    '😋 Super Tasty',
-    '🧼 Neat & Clean',
-    '💰 Pocket Friendly',
-    '⚡ Quick Service',
-    '🌶️ Spicy Bang!',
-    '🌿 Fresh Items',
-    '👨‍👩‍👧 Family Friendly'
+    { id: 'must_try', icon: 'fa-solid fa-fire text-amber-400', en: 'Must Try', bn: 'অবশ্যই ট্রাই করুন' },
+    { id: 'tasty', icon: 'fa-solid fa-thumbs-up text-emerald-400', en: 'Super Tasty', bn: 'অসাধারণ স্বাদ' },
+    { id: 'clean', icon: 'fa-solid fa-shield-heart text-sky-400', en: 'Neat & Clean', bn: 'পরিচ্ছন্ন পরিবেশ' },
+    { id: 'budget', icon: 'fa-solid fa-wallet text-indigo-400', en: 'Pocket Friendly', bn: 'বাজেট ফ্রেন্ডলি' },
+    { id: 'quick', icon: 'fa-solid fa-bolt text-yellow-400', en: 'Quick Service', bn: 'দ্রুত সার্ভিস' },
+    { id: 'spicy', icon: 'fa-solid fa-pepper-hot text-rose-400', en: 'Spicy Delight', bn: 'স্পাইসি ও মজাদার' },
+    { id: 'fresh', icon: 'fa-solid fa-leaf text-emerald-400', en: 'Fresh Items', bn: 'তাজা উপাদান' },
+    { id: 'family', icon: 'fa-solid fa-users text-blue-400', en: 'Family Friendly', bn: 'ফ্যামিলি ফ্রেন্ডলি' }
   ];
 
   const TASTE_DESCRIPTIONS = {
-    5: '⭐⭐⭐⭐⭐ 5.0 — অসাধারণ স্বাদ! (Outstanding Taste)',
-    4: '⭐⭐⭐⭐ 4.0 — বেশ ভালো স্বাদ (Very Good)',
-    3: '⭐⭐⭐ 3.0 — সাধারণ স্বাদ (Average)',
-    2: '⭐⭐ 2.0 — চলনসই (Below Average)',
-    1: '⭐ 1.0 — ভালো নয় (Disappointing)'
+    5: { en: '5.0 — Outstanding Taste', bn: '৫.০ — অসাধারণ স্বাদ' },
+    4: { en: '4.0 — Very Good', bn: '৪.০ — বেশ ভালো স্বাদ' },
+    3: { en: '3.0 — Average', bn: '৩.০ — সাধারণ স্বাদ' },
+    2: { en: '2.0 — Below Average', bn: '২.০ — চলনসই' },
+    1: { en: '1.0 — Disappointing', bn: '১.০ — ভালো নয়' }
   };
 
   const HYGIENE_DESCRIPTIONS = {
-    5: '⭐⭐⭐⭐⭐ 5.0 — অত্যন্ত পরিচ্ছন্ন ও স্বাস্থ্যকর (Spotless & Clean)',
-    4: '⭐⭐⭐⭐ 4.0 — পরিচ্ছন্ন ও গোছানো (Good Hygiene)',
-    3: '⭐⭐⭐ 3.0 — সাধারণ স্ট্রিট ফুড হাইজিন (Basic Hygiene)',
-    2: '⭐⭐ 2.0 — পরিচ্ছন্নতার ঘাটতি রয়েছে (Needs Improvement)',
-    1: '⭐ 1.0 — অপরিচ্ছন্ন (Unclean)'
+    5: { en: '5.0 — Spotless & Clean', bn: '৫.০ — অত্যন্ত পরিচ্ছন্ন ও স্বাস্থ্যকর' },
+    4: { en: '4.0 — Good Hygiene', bn: '৪.০ — পরিচ্ছন্ন ও গোছানো' },
+    3: { en: '3.0 — Basic Hygiene', bn: '৩.০ — সাধারণ স্ট্রিট ফুড হাইজিন' },
+    2: { en: '2.0 — Needs Improvement', bn: '২.০ — পরিচ্ছন্নতার ঘাটতি রয়েছে' },
+    1: { en: '1.0 — Unclean', bn: '১.০ — অপরিচ্ছন্ন' }
   };
 
   function escapeHtml(value) {
@@ -107,7 +107,22 @@
     return { reviews, avg };
   }
 
+  function renderTagBadge(tag) {
+    const isBn = FH.i18n && FH.i18n.get() === 'bn';
+    const found = FOOD_TAGS.find(t => t.id === tag || t.en === tag || t.bn === tag || String(tag).includes(t.en) || String(tag).includes(t.id));
+    if (found) {
+      return `<span class="inline-flex items-center gap-1 text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-md font-medium">
+        <i class="${found.icon} text-[9px]"></i> <span>${escapeHtml(isBn ? found.bn : found.en)}</span>
+      </span>`;
+    }
+    const cleanStr = String(tag).replace(/[\uD83C-\uDBFF\uDC00-\uDFFF\u2600-\u27bf]/g, '').trim();
+    return `<span class="inline-flex items-center gap-1 text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-md font-medium">
+      <i class="fa-solid fa-tag text-amber-400 text-[9px]"></i> <span>${escapeHtml(cleanStr || tag)}</span>
+    </span>`;
+  }
+
   function reviewCard(review) {
+    const isBn = FH.i18n && FH.i18n.get() === 'bn';
     return `<article class="rounded-xl border border-[#16365f] bg-[#0c233f] p-3 space-y-2">
       <div class="flex items-start justify-between gap-2">
         <div class="min-w-0">
@@ -122,13 +137,13 @@
         </div>
         <div class="text-right shrink-0">
           ${stars(review.overall, 'text-amber-400')}
-          <div class="text-[10px] text-sky-300 mt-0.5"><i class="fa-solid fa-hands-bubbles"></i> Hygiene ${Number(review.hygiene || 5).toFixed(1)}/5</div>
+          <div class="text-[10px] text-sky-300 mt-0.5"><i class="fa-solid fa-hands-bubbles"></i> ${isBn ? 'হাইজিন' : 'Hygiene'} ${FH.num(Number(review.hygiene || 5).toFixed(1))}/৫</div>
         </div>
       </div>
 
       ${review.tags && review.tags.length ? `
         <div class="flex flex-wrap gap-1">
-          ${review.tags.map(t => `<span class="text-[9px] bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-medium">${escapeHtml(t)}</span>`).join('')}
+          ${review.tags.map(renderTagBadge).join('')}
         </div>
       ` : ''}
 
@@ -157,10 +172,13 @@
 
       let selectedTaste = 5;
       let selectedHygiene = 5;
-      const selectedTags = new Set(['😋 Super Tasty']);
+      const selectedTags = new Set(['tasty']);
+
+      const isBn = FH.i18n && FH.i18n.get() === 'bn';
+      const lang = isBn ? 'bn' : 'en';
 
       m.innerHTML = `
-        <div class="bg-[#07192f] border border-[#1b3d6a] w-full max-w-lg rounded-2xl p-5 md:p-6 space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto relative text-white" role="dialog" aria-modal="true" aria-label="Write Food & Hygiene Review">
+        <div class="bg-[#07192f] border border-[#1b3d6a] w-full max-w-lg rounded-2xl p-5 md:p-6 space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto relative text-white" role="dialog" aria-modal="true" aria-label="${FH.t('write_review_modal_title', 'Write Food & Hygiene Review')}">
           <!-- Modal Header -->
           <div class="flex items-start justify-between border-b border-[#1b3d6a] pb-3">
             <div>
@@ -168,10 +186,10 @@
                 <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xs">
                   <i class="fa-solid fa-utensils"></i>
                 </div>
-                <h3 class="font-bold text-base md:text-lg text-white">Rate Food & Hygiene</h3>
+                <h3 class="font-bold text-base md:text-lg text-white">${FH.t('write_review_modal_title', 'Rate Food & Hygiene')}</h3>
               </div>
               <p class="text-xs text-slate-400 mt-0.5">
-                Reviewing: <b class="text-slate-200">${escapeHtml(spot.name)}</b>
+                ${isBn ? 'রিভিউ দিচ্ছেন: ' : 'Reviewing: '} <b class="text-slate-200">${escapeHtml(spot.name)}</b>
               </p>
             </div>
             <button id="review-modal-close" type="button" aria-label="Close" class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
@@ -182,9 +200,9 @@
             <div class="p-3.5 rounded-xl bg-[#0c233f] border border-[#1b3d6a] space-y-2">
               <div class="flex items-center justify-between">
                 <label class="text-xs font-bold text-white flex items-center gap-1.5">
-                  <i class="fa-solid fa-burger text-amber-400"></i> Food Taste & Quality (খাবারের স্বাদ ও মান)
+                  <i class="fa-solid fa-burger text-amber-400"></i> ${FH.t('taste_score_label', 'Food Taste & Quality')}
                 </label>
-                <output id="food-taste-val" class="text-xs font-bold font-mono text-amber-400">5.0 / 5.0</output>
+                <output id="food-taste-val" class="text-xs font-bold font-mono text-amber-400">${FH.num('5.0')} / ${FH.num('5.0')}</output>
               </div>
 
               <div class="flex items-center gap-2 pt-1" id="star-row-taste" role="radiogroup" aria-label="Food taste rating">
@@ -196,7 +214,7 @@
               </div>
 
               <div id="food-taste-desc" class="text-[11px] font-medium text-amber-300">
-                ${TASTE_DESCRIPTIONS[5]}
+                ${TASTE_DESCRIPTIONS[5][lang]}
               </div>
             </div>
 
@@ -204,9 +222,9 @@
             <div class="p-3.5 rounded-xl bg-[#0c233f] border border-[#1b3d6a] space-y-2">
               <div class="flex items-center justify-between">
                 <label class="text-xs font-bold text-white flex items-center gap-1.5">
-                  <i class="fa-solid fa-hands-bubbles text-sky-400"></i> Cart Hygiene & Cleanliness (পরিচ্ছন্নতা ও স্বাস্থ্যবিধি)
+                  <i class="fa-solid fa-hands-bubbles text-sky-400"></i> ${FH.t('hygiene_score_label', 'Cart Hygiene & Cleanliness')}
                 </label>
-                <output id="food-hygiene-val" class="text-xs font-bold font-mono text-sky-400">5.0 / 5.0</output>
+                <output id="food-hygiene-val" class="text-xs font-bold font-mono text-sky-400">${FH.num('5.0')} / ${FH.num('5.0')}</output>
               </div>
 
               <div class="flex items-center gap-2 pt-1" id="star-row-hygiene" role="radiogroup" aria-label="Hygiene rating">
@@ -218,19 +236,20 @@
               </div>
 
               <div id="food-hygiene-desc" class="text-[11px] font-medium text-sky-300">
-                ${HYGIENE_DESCRIPTIONS[5]}
+                ${HYGIENE_DESCRIPTIONS[5][lang]}
               </div>
             </div>
 
             <!-- 3. Foodie Reaction Badges / Tags -->
             <div class="space-y-1.5">
-              <label class="block text-xs font-semibold text-slate-300">Quick Foodie Badges (ট্যাপ করে যুক্ত করুন)</label>
+              <label class="block text-xs font-semibold text-slate-300">${FH.t('select_tags_label', 'Quick Foodie Badges')}</label>
               <div class="flex flex-wrap gap-1.5" id="review-tag-cloud">
                 ${FOOD_TAGS.map(tag => {
-                  const active = selectedTags.has(tag);
+                  const active = selectedTags.has(tag.id);
                   return `
-                    <button type="button" data-tag="${escapeHtml(tag)}" class="text-xs px-2.5 py-1 rounded-lg border font-medium transition ${active ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-[#0c233f] text-slate-300 border-[#1b3d6a] hover:border-slate-400'}">
-                      ${escapeHtml(tag)}
+                    <button type="button" data-tag="${escapeHtml(tag.id)}" class="text-xs px-2.5 py-1.5 rounded-lg border font-medium inline-flex items-center gap-1.5 transition ${active ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-[#0c233f] text-slate-300 border-[#1b3d6a] hover:border-slate-400'}">
+                      <i class="${tag.icon}"></i>
+                      <span>${escapeHtml(isBn ? tag.bn : tag.en)}</span>
                     </button>
                   `;
                 }).join('')}
@@ -240,23 +259,23 @@
             <!-- 4. Review Comment Textarea -->
             <div>
               <label for="food-review-textarea" class="block text-xs font-semibold text-slate-300 mb-1">
-                Your Foodie Recommendation & Experience (খাবারের বিস্তারিত রিভিউ)
+                ${FH.t('comment_label', 'Your Foodie Recommendation & Experience')}
               </label>
-              <textarea id="food-review-textarea" rows="3" maxlength="600" placeholder="Which items did you eat? How was the spice level, portion size, and overall satisfaction?" class="w-full px-3 py-2 border border-[#1b3d6a] bg-[#0c233f] text-white rounded-xl text-xs focus:border-brand focus:outline-none resize-none"></textarea>
+              <textarea id="food-review-textarea" rows="3" maxlength="600" placeholder="${escapeHtml(FH.t('comment_placeholder', 'Which items did you eat? How was the spice level, portion size, and overall satisfaction?'))}" class="w-full px-3 py-2 border border-[#1b3d6a] bg-[#0c233f] text-white rounded-xl text-xs focus:border-brand focus:outline-none resize-none"></textarea>
             </div>
 
             <!-- User Auth Indicator -->
             <div class="text-[11px] text-slate-400 flex items-center justify-between">
               <span class="flex items-center gap-1.5">
-                <i class="fa-solid fa-circle-check text-emerald-400"></i> Posting as <b class="text-white">${escapeHtml(user.email)}</b>
+                <i class="fa-solid fa-circle-check text-emerald-400"></i> ${isBn ? 'পোস্ট করছেন:' : 'Posting as'} <b class="text-white">${escapeHtml(user.email)}</b>
               </span>
-              <span class="text-[10px] text-slate-500">Verified Foodie Review</span>
+              <span class="text-[10px] text-slate-500">${isBn ? 'যাচাইকৃত ফুডি রিভিউ' : 'Verified Foodie Review'}</span>
             </div>
 
             <!-- Submit Button -->
             <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-3 rounded-xl text-sm transition shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2">
               <i class="fa-solid fa-paper-plane"></i>
-              <span>Post Food Review</span>
+              <span>${FH.t('submit_review', 'Post Food Review')}</span>
             </button>
           </form>
         </div>
@@ -282,8 +301,8 @@
       tasteButtons.forEach((btn) => {
         btn.onclick = () => {
           selectedTaste = Number(btn.dataset.val);
-          tasteVal.textContent = selectedTaste.toFixed(1) + ' / 5.0';
-          tasteDesc.textContent = TASTE_DESCRIPTIONS[selectedTaste] || '';
+          tasteVal.textContent = FH.num(selectedTaste.toFixed(1)) + ' / ' + FH.num('5.0');
+          tasteDesc.textContent = (TASTE_DESCRIPTIONS[selectedTaste] && TASTE_DESCRIPTIONS[selectedTaste][lang]) || '';
           tasteButtons.forEach(b => {
             const val = Number(b.dataset.val);
             b.querySelector('i').className = val <= selectedTaste ? 'fa-solid fa-star text-amber-400' : 'fa-regular fa-star text-slate-600';
@@ -298,8 +317,8 @@
       hygieneButtons.forEach((btn) => {
         btn.onclick = () => {
           selectedHygiene = Number(btn.dataset.val);
-          hygieneVal.textContent = selectedHygiene.toFixed(1) + ' / 5.0';
-          hygieneDesc.textContent = HYGIENE_DESCRIPTIONS[selectedHygiene] || '';
+          hygieneVal.textContent = FH.num(selectedHygiene.toFixed(1)) + ' / ' + FH.num('5.0');
+          hygieneDesc.textContent = (HYGIENE_DESCRIPTIONS[selectedHygiene] && HYGIENE_DESCRIPTIONS[selectedHygiene][lang]) || '';
           hygieneButtons.forEach(b => {
             const val = Number(b.dataset.val);
             b.querySelector('i').className = val <= selectedHygiene ? 'fa-solid fa-star text-sky-400' : 'fa-regular fa-star text-slate-600';
@@ -314,10 +333,10 @@
           const t = btn.dataset.tag;
           if (selectedTags.has(t)) {
             selectedTags.delete(t);
-            btn.className = 'text-xs px-2.5 py-1 rounded-lg border font-medium transition bg-[#0c233f] text-slate-300 border-[#1b3d6a] hover:border-slate-400';
+            btn.className = 'text-xs px-2.5 py-1.5 rounded-lg border font-medium inline-flex items-center gap-1.5 transition bg-[#0c233f] text-slate-300 border-[#1b3d6a] hover:border-slate-400';
           } else {
             selectedTags.add(t);
-            btn.className = 'text-xs px-2.5 py-1 rounded-lg border font-medium transition bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm';
+            btn.className = 'text-xs px-2.5 py-1.5 rounded-lg border font-medium inline-flex items-center gap-1.5 transition bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm';
           }
         };
       });
@@ -356,7 +375,7 @@
         FH.store.emit();
 
         closeSelf();
-        FH.toast(`🎉 Thank you! ${selectedTaste}★ Food · ${selectedHygiene}★ Hygiene review posted.`);
+        FH.toast(isBn ? 'ধন্যবাদ! আপনার খাবার ও হাইজিন রিভিউ সফলভাবে জমা হয়েছে।' : 'Thank you! Your food & hygiene review has been posted.');
 
         // Re-mount drawer review view
         const revEl = document.getElementById('reviews');
@@ -379,6 +398,7 @@
       if (!el || !spot) return;
       const reviews = reviewsFor(spot.id);
       const avg = averages(reviews);
+      const isBn = FH.i18n && FH.i18n.get() === 'bn';
 
       el.innerHTML = `
         <div class="fh-review-box rounded-xl border border-[#1b3d6a] bg-gradient-to-br from-[#0c233f] to-[#07192f] p-3.5 space-y-3">
@@ -387,28 +407,28 @@
             <div>
               <h3 class="font-bold text-sm text-white flex items-center gap-1.5">
                 <i class="fa-solid fa-utensils text-amber-400"></i>
-                <span>Food Quality & Hygiene Reviews</span>
+                <span>${FH.t('food_and_hygiene_reviews', 'Food Quality & Hygiene Reviews')}</span>
               </h3>
-              <p class="text-[11px] text-slate-300 mt-0.5">খাবারের স্বাদ, মান ও পরিচ্ছন্নতার উপর কমিউনিটি রিভিউ</p>
+              <p class="text-[11px] text-slate-300 mt-0.5">${isBn ? 'খাবারের স্বাদ, মান ও পরিচ্ছন্নতার উপর কমিউনিটি রিভিউ' : 'Community ratings on food taste, quality & cleanliness'}</p>
             </div>
             <span class="text-[10px] font-mono text-slate-200 bg-[#07192f] border border-[#1b3d6a] px-2.5 py-1 rounded-full shrink-0">
-              ${avg.count} review${avg.count === 1 ? '' : 's'}
+              ${FH.num(avg.count)} ${FH.t('reviews_count', 'reviews')}
             </span>
           </div>
 
           <!-- Explanatory note in English -->
           <div class="p-2.5 rounded-lg bg-[#07192f] border border-[#1b3d6a] text-xs text-slate-300 italic leading-relaxed">
-            "Note: The 25+ ground confirmation above is strictly to verify that the spot is in the 100% correct physical location on the map. This section is to rate food taste, quality, and hygiene."
+            ${FH.t('ground_presence_note')}
           </div>
 
           <!-- Score Overview Cards -->
           <div class="grid grid-cols-2 gap-2">
             <div class="rounded-xl border border-[#1b3d6a] bg-[#07192f] p-3">
               <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1">
-                <i class="fa-solid fa-burger text-amber-400"></i> Food Taste
+                <i class="fa-solid fa-burger text-amber-400"></i> ${FH.t('food_taste_rating', 'Food Taste')}
               </div>
               <div class="text-xl font-black text-white mt-1">
-                ${avg.count ? avg.overall.toFixed(1) : '—'}<span class="text-xs text-slate-500 font-medium">/5</span>
+                ${avg.count ? FH.num(avg.overall.toFixed(1)) : '—'}<span class="text-xs text-slate-500 font-medium">/5</span>
               </div>
               <div class="mt-1">
                 ${stars(avg.count ? avg.overall : 0, 'text-amber-400 text-xs')}
@@ -417,10 +437,10 @@
 
             <div class="rounded-xl border border-[#1b3d6a] bg-[#07192f] p-3">
               <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1">
-                <i class="fa-solid fa-hands-bubbles text-sky-400"></i> Cart Hygiene
+                <i class="fa-solid fa-hands-bubbles text-sky-400"></i> ${FH.t('hygiene_rating', 'Cart Hygiene')}
               </div>
               <div class="text-xl font-black text-white mt-1">
-                ${avg.count ? avg.hygiene.toFixed(1) : '—'}<span class="text-xs text-slate-500 font-medium">/5</span>
+                ${avg.count ? FH.num(avg.hygiene.toFixed(1)) : '—'}<span class="text-xs text-slate-500 font-medium">/5</span>
               </div>
               <div class="mt-1">
                 ${stars(avg.count ? avg.hygiene : 0, 'text-sky-400 text-xs')}
@@ -431,20 +451,20 @@
           <!-- Primary CTA Button: Opens Food Review Modal -->
           <button id="btn-open-review-dialog" type="button" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs md:text-sm shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition active:scale-[0.98]">
             <i class="fa-solid fa-star text-white"></i>
-            <span>Write Food & Hygiene Review (খাবার রিভিউ দিন)</span>
+            <span>${FH.t('write_review_modal_title', 'Write Food & Hygiene Review')}</span>
           </button>
 
           <!-- Community Reviews Feed -->
           <div class="space-y-2 pt-1 border-t border-[#14355f]">
             <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-              <span>Community Reviews (${reviews.length})</span>
-              <span class="text-[10px] text-slate-500 font-normal">Latest first</span>
+              <span>${isBn ? `কমিউনিটি রিভিউ (${FH.num(reviews.length)})` : `Community Reviews (${reviews.length})`}</span>
+              <span class="text-[10px] text-slate-500 font-normal">${isBn ? 'সর্বশেষ' : 'Latest first'}</span>
             </div>
 
             <div id="review-list" class="space-y-2">
               ${reviews.length
                 ? reviews.slice(0, 8).map(reviewCard).join('')
-                : '<div class="p-4 rounded-xl border border-[#1b3d6a] bg-[#07192f] text-center text-xs text-slate-400">No community food reviews yet. Be the first to rate the food!</div>'}
+                : `<div class="p-4 rounded-xl border border-[#1b3d6a] bg-[#07192f] text-center text-xs text-slate-400">${FH.t('no_reviews_yet')}</div>`}
             </div>
           </div>
         </div>`;

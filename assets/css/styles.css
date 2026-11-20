@@ -70,38 +70,128 @@ body {
 @media (min-width: 768px) { #detail { transform: translateX(100%); } }
 #detail.open { transform: none; }
 
-/* Luxury Map Pins */
-.fh-pin {
+/* Professional Map Marker Pins (Google Maps / Foodpanda style) */
+.fh-map-pin, .fh-pin {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
+  transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1), filter .2s ease;
+  transform-origin: bottom center;
+}
+
+.fh-pin-body {
+  display: inline-flex;
   align-items: center;
   gap: 5px;
   height: 28px;
-  padding: 0 9px;
-  border-radius: 14px;
+  padding: 0 8px 0 5px;
+  border-radius: 7px;
   color: #ffffff !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 11px;
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45), 0 0 0 1.5px rgba(255, 255, 255, 0.2);
-  border: 1.5px solid #ffffff;
-  width: max-content;
-  transition: transform .18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .18s ease;
-  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  position: relative;
+  white-space: nowrap;
 }
-.fh-pin * {
+
+.fh-pin-body * {
   color: #ffffff !important;
 }
-.fh-pin:hover {
-  transform: translateY(-2px) scale(1.1);
-  box-shadow: 0 8px 18px rgba(240, 78, 55, 0.5);
+
+.fh-pin-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #ffffff !important;
+  font-size: 10px;
 }
-.fh-pin.sel {
-  transform: scale(1.22);
-  outline: 2px solid #ffffff;
-  box-shadow: 0 0 20px rgba(240, 78, 55, 0.85) !important;
+
+.fh-pin-icon-wrap i {
+  color: #ffffff !important;
+}
+
+.fh-pin-score {
+  font-weight: 800;
+  color: #ffffff !important;
+  font-size: 11px;
+  letter-spacing: -0.2px;
+}
+
+.fh-pin-badge.verified {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff !important;
+  color: #059669 !important;
+  font-size: 8px;
+  margin-left: 1px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.fh-pin-badge.verified i {
+  color: #059669 !important;
+}
+
+.fh-pin-stem {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #059669;
+  margin-top: -1px;
+}
+
+.fh-pin-status-dot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.fh-pin-status-dot.open { background: #10b981; }
+.fh-pin-status-dot.closed { background: #f43f5e; }
+
+.fh-map-pin:hover, .fh-pin:hover {
+  transform: translateY(-4px) scale(1.15);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
   z-index: 1000 !important;
 }
-.fh-pin.unverified-pin {
-  border-style: dashed;
+
+.fh-map-pin.is-selected, .fh-pin.sel {
+  transform: translateY(-6px) scale(1.22);
+  filter: drop-shadow(0 10px 20px rgba(240, 78, 55, 0.75));
+  z-index: 1001 !important;
+}
+
+.fh-map-pin.is-selected .fh-pin-body, .fh-pin.sel {
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.65);
+}
+
+.fh-map-pin.is-closed, .fh-pin.is-closed {
+  opacity: 0.65;
+  filter: saturate(0.5);
+}
+.fh-map-pin.is-closed:hover,
+.fh-map-pin.is-closed.is-selected {
+  opacity: 1;
+  filter: none;
 }
 
 /* Chips & Badges */
@@ -439,30 +529,6 @@ body[data-theme="light"],
   background: transparent !important;
   border: 0 !important;
 }
-.fh-pin {
-  position: relative;
-}
-.fh-pin.is-closed {
-  opacity: 0.6;
-  filter: saturate(0.55);
-}
-.fh-pin.is-closed:hover,
-.fh-pin.is-closed.sel {
-  opacity: 1;
-  filter: none;
-}
-.fh-pin-status {
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 10px;
-  height: 10px;
-  border-radius: 9999px;
-  border: 1.5px solid #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-.fh-pin-status.open { background: #10b981; }
-.fh-pin-status.closed { background: #f43f5e; }
 
 .fh-marker-icon.is-selected,
 .fh-mapbox-marker.is-selected {

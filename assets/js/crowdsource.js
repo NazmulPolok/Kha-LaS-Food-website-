@@ -104,8 +104,8 @@
               </div>
 
               <div class="flex flex-wrap items-center justify-between gap-2 text-[11px]">
-                <span class="font-mono bg-[#07192f] text-slate-200 px-2.5 py-1 rounded-lg border border-[#1b3d6a]" id="crowd-coords">
-                  📍 ${currentLat.toFixed(5)}, ${currentLng.toFixed(5)}
+                <span class="font-mono bg-[#07192f] text-slate-200 px-2.5 py-1 rounded-lg border border-[#1b3d6a] inline-flex items-center gap-1" id="crowd-coords">
+                  <i class="fa-solid fa-location-dot text-brand text-[10px]"></i> ${currentLat.toFixed(5)}, ${currentLng.toFixed(5)}
                 </span>
                 <span class="text-slate-500">Tap “Use GPS” if you are standing at the cart.</span>
               </div>
@@ -208,7 +208,7 @@
         const badge = document.getElementById('crowd-coords');
         if (latField) latField.value = lat.toFixed(6);
         if (lngField) lngField.value = lng.toFixed(6);
-        if (badge) badge.textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        if (badge) badge.innerHTML = `<i class="fa-solid fa-location-dot text-brand text-[10px]"></i> ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
       };
 
       // Initialise a small draggable-pin map (Mapbox when configured, Leaflet otherwise).

@@ -212,18 +212,26 @@
         clearRouteLayers();
         if (!Array.isArray(points) || points.length < 2) return;
         const latlngs = points.map((p) => [Number(p.lat), Number(p.lng)]);
-        const color = (options && options.color) || '#f04e37';
-        routeCasing = L.polyline(latlngs, {
-          color: '#ffffff',
-          weight: 11,
-          opacity: 0.85,
-          lineCap: 'round',
-          lineJoin: 'round',
-          interactive: false
-        }).addTo(map);
+        const isWalking = options && (options.mode === 'walking' || options.isWalking);
+        const color = (options && options.color) || (isWalking ? '#0284c7' : '#1a73e8');
+        const dashArray = isWalking ? '2, 12' : (options && options.dashArray ? options.dashArray : null);
+        const weight = isWalking ? 6 : ((options && options.weight) || 6);
+
+        if (!isWalking) {
+          routeCasing = L.polyline(latlngs, {
+            color: '#ffffff',
+            weight: 10,
+            opacity: 0.9,
+            lineCap: 'round',
+            lineJoin: 'round',
+            interactive: false
+          }).addTo(map);
+        }
+
         routeLine = L.polyline(latlngs, {
           color,
-          weight: 6,
+          weight,
+          dashArray,
           opacity: 0.95,
           lineCap: 'round',
           lineJoin: 'round',

@@ -25,8 +25,8 @@
 
       const icon = $('#theme-toggle-icon');
       const text = $('#theme-toggle-text');
-      if (icon) icon.textContent = mode === 'light' ? '☀️' : '🌙';
-      if (text) text.textContent = mode === 'light' ? 'Light' : 'Dark';
+      if (icon) icon.innerHTML = mode === 'light' ? '<i class="fa-solid fa-sun text-amber-400"></i>' : '<i class="fa-solid fa-moon text-amber-400"></i>';
+      if (text) text.textContent = FH.t ? FH.t(mode === 'light' ? 'theme_light' : 'theme_dark') : (mode === 'light' ? 'Light' : 'Dark');
 
       // Update map tile layer if map is initialized
       if (FH.map && typeof FH.map.setTheme === 'function') {
@@ -39,7 +39,7 @@
       const next = current === 'light' ? 'dark' : 'light';
       this.set(next);
       if (typeof FH.toast === 'function') {
-        FH.toast(next === 'light' ? '☀️ Switched to Off-White Light Mode' : '🌙 Switched to Midnight Navy Dark Mode');
+        FH.toast(next === 'light' ? 'Switched to Light Mode' : 'Switched to Dark Mode');
       }
     },
 
@@ -92,17 +92,17 @@
       const floatLabel = $('#floating-btn-label');
       if (floatBtn && floatLabel) {
         if (isOpen) {
-          floatLabel.textContent = 'Hide Spots';
+          floatLabel.textContent = FH.t ? FH.t('hide_spots', 'Hide Spots') : 'Hide Spots';
           floatBtn.classList.remove('animate-pulse');
         } else {
-          floatLabel.textContent = 'Show Food Spots';
+          floatLabel.textContent = FH.t ? FH.t('show_spots', 'Show Food Spots') : 'Show Food Spots';
         }
       }
     },
 
     syncSpotCount(count) {
       const badge = $('#floating-count-badge');
-      if (badge) badge.textContent = count;
+      if (badge) badge.textContent = FH.num ? FH.num(count) : count;
     },
 
     init() {

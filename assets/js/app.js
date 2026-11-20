@@ -46,7 +46,8 @@
 
   function list() {
     const a = FH.store.filtered(), sel = FH.store.S.sel;
-    $('#count').textContent = a.length + (a.length === 1 ? ' spot' : ' spots');
+    const countStr = FH.num(a.length) + ' ' + (a.length === 1 ? FH.t('spot_single', 'spot') : FH.t('spots_plural', 'spots'));
+    $('#count').textContent = countStr;
     if (FH.theme && FH.theme.syncSpotCount) FH.theme.syncSpotCount(a.length);
     $('#list').innerHTML = a.length ? a.map(s => {
       const confs = (s.confirmations && s.confirmations.length) || 0;
@@ -63,25 +64,25 @@
         <div class="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-[#07192f] border border-[#1b3d6a]">
           <img src="${thumb}" alt="${FH.esc(s.name)}" class="w-full h-full object-cover" onerror="this.src='${FH.gallery && FH.gallery.fallback}'">
           <span class="absolute bottom-0.5 right-0.5 bg-black/70 text-white text-[9px] px-1 rounded flex items-center gap-0.5 font-mono">
-            <i class="fa-solid fa-camera text-[8px] text-brand"></i> ${photos.length || 1}
+            <i class="fa-solid fa-camera text-[8px] text-brand"></i> ${FH.num(photos.length || 1)}
           </span>
         </div>
 
         <div class="flex-1 min-w-0">
           <div class="font-semibold text-sm truncate text-white">${FH.esc(s.name)}</div>
-          <div class="text-xs text-slate-400 truncate mt-0.5">${FH.esc(s.type)}, ${s.food.map(FH.esc).join(', ')}, ${s.price}</div>
+          <div class="text-xs text-slate-400 truncate mt-0.5">${FH.esc(FH.t(s.type, s.type))}, ${s.food.map(f => FH.esc(FH.t(f, f))).join(', ')}, ${s.price}</div>
           <div class="flex flex-wrap items-center gap-1.5 mt-1">
             ${isVer
-              ? `<span class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300 bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded-full" title="ম্যাপে এই লোকেশনটি ২৫+ জন স্থানীয় ব্যবহারকারী বাস্তবে দেখে নিশ্চিত করেছেন (লোকেশন কনফার্মেশন, এটি খাবারের রিভিউ নয়)"><i class="fa-solid fa-location-dot text-emerald-400"></i> Spot Confirmed (${confs})</span>`
-              : `<span class="inline-flex items-center gap-1 text-[10px] font-medium text-amber-300 bg-amber-950/70 border border-amber-500/40 px-1.5 py-0.5 rounded-full" title="ম্যাপে বাস্তব উপস্থিতি নিশ্চিত করতে ২৫ জনের কনফার্মেশন প্রয়োজন (${confs}/${THRESHOLD})"><i class="fa-regular fa-clock text-amber-400"></i> Location Pending (${confs}/${THRESHOLD})</span>`
+              ? `<span class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300 bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded-full" title="${FH.t('spot_confirmed')}"><i class="fa-solid fa-location-dot text-emerald-400"></i> ${FH.t('spot_confirmed', 'Spot Confirmed')} (${FH.num(confs)})</span>`
+              : `<span class="inline-flex items-center gap-1 text-[10px] font-medium text-amber-300 bg-amber-950/70 border border-amber-500/40 px-1.5 py-0.5 rounded-full" title="${FH.t('location_pending')}"><i class="fa-regular fa-clock text-amber-400"></i> ${FH.t('location_pending', 'Location Pending')} (${FH.num(confs)}/${FH.num(THRESHOLD)})</span>`
             }
             ${hasBooking
-              ? `<span class="inline-flex items-center gap-1 text-[10px] text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 px-1.5 py-0.5 rounded" title="Table Booking Available"><i class="fa-solid fa-calendar-check text-emerald-400"></i> Booking</span>`
-              : `<span class="inline-flex items-center gap-1 text-[10px] text-slate-400 bg-[#07192f] border border-[#1b3d6a] px-1.5 py-0.5 rounded" title="No Table Booking (Walk-in only)"><i class="fa-solid fa-calendar-xmark text-slate-500"></i> No Booking</span>`
+              ? `<span class="inline-flex items-center gap-1 text-[10px] text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 px-1.5 py-0.5 rounded" title="${FH.t('booking')}"><i class="fa-solid fa-calendar-check text-emerald-400"></i> ${FH.t('booking', 'Booking')}</span>`
+              : `<span class="inline-flex items-center gap-1 text-[10px] text-slate-400 bg-[#07192f] border border-[#1b3d6a] px-1.5 py-0.5 rounded" title="${FH.t('no_booking')}"><i class="fa-solid fa-calendar-xmark text-slate-500"></i> ${FH.t('no_booking', 'No Booking')}</span>`
             }
             ${hasDelivery
-              ? `<span class="inline-flex items-center gap-1 text-[10px] text-sky-300 bg-sky-950/60 border border-sky-500/40 px-1.5 py-0.5 rounded" title="Delivery Available"><i class="fa-solid fa-motorcycle text-sky-400"></i> Delivery</span>`
-              : `<span class="inline-flex items-center gap-1 text-[10px] text-slate-400 bg-[#07192f] border border-[#1b3d6a] px-1.5 py-0.5 rounded" title="No Delivery (Dine-in only)"><i class="fa-solid fa-ban text-slate-500"></i> No Delivery</span>`
+              ? `<span class="inline-flex items-center gap-1 text-[10px] text-sky-300 bg-sky-950/60 border border-sky-500/40 px-1.5 py-0.5 rounded" title="${FH.t('delivery')}"><i class="fa-solid fa-motorcycle text-sky-400"></i> ${FH.t('delivery', 'Delivery')}</span>`
+              : `<span class="inline-flex items-center gap-1 text-[10px] text-slate-400 bg-[#07192f] border border-[#1b3d6a] px-1.5 py-0.5 rounded" title="${FH.t('no_delivery')}"><i class="fa-solid fa-ban text-slate-500"></i> ${FH.t('no_delivery', 'No Delivery')}</span>`
             }
             ${dist != null
               ? `<span class="inline-flex items-center gap-1 text-[10px] text-brand bg-brand/10 border border-brand/30 px-1.5 py-0.5 rounded font-semibold" title="Distance from you"><i class="fa-solid fa-location-arrow"></i> ${FH.geo.label(dist)}</span>`
@@ -92,17 +93,20 @@
               : ''
             }
             <span class="inline-flex items-center gap-1 text-[10px] ${isOpen ? 'text-emerald-300 bg-emerald-950/60 border-emerald-500/40' : 'text-rose-300 bg-rose-950/60 border-rose-500/40'} border px-1.5 py-0.5 rounded">
-              <i class="fa-solid fa-circle text-[6px]"></i> ${isOpen ? 'Open' : 'Closed'}
+              <i class="fa-solid fa-circle text-[6px]"></i> ${FH.t(isOpen ? 'open_now' : 'closed_now', isOpen ? 'Open' : 'Closed')}
             </span>
           </div>
         </div>
 
-        <div class="shrink-0 flex flex-col items-end">
+        <div class="shrink-0 flex flex-col items-end gap-1.5">
           ${FH.badge(s.rating)}
+          <span data-dir-id="${s.id}" class="w-6 h-6 rounded-md bg-[#07192f] hover:bg-brand text-slate-400 hover:text-white border border-[#1b3d6a] flex items-center justify-center transition cursor-pointer" title="${FH.t('view_directions', 'গাড়ি ও হাঁটার দিকনির্দেশ')}">
+            <i class="fa-solid fa-diamond-turn-right text-[10px]"></i>
+          </span>
         </div>
       </button></li>`;
     }).join('')
-    : '<li class="p-6 text-sm text-slate-400 text-center">No spots match these filters. Clear a filter to see more.</li>';
+    : `<li class="p-6 text-sm text-slate-400 text-center">${FH.t('no_spots_match', 'No spots match these filters. Clear a filter to see more.')}</li>`;
   }
 
   function head(s) {
@@ -112,16 +116,16 @@
 
     $('#d-head').innerHTML = `
       ${FH.badge(s.rating)}
-      <span class="text-sm text-slate-400">${s.reviews} reviews</span>
+      <span class="text-sm text-slate-400">${FH.num(s.reviews)} ${FH.t('reviews_count', 'reviews')}</span>
       <span class="text-slate-600">|</span>
       <span class="text-xs ${isVer ? 'text-emerald-400 font-semibold' : 'text-amber-400 font-medium'} flex items-center gap-1">
         <i class="fa-solid ${isVer ? 'fa-certificate text-emerald-400' : 'fa-clock text-amber-400'}"></i>
-        ${isVer ? 'Community Verified (' + confs + ')' : 'Pending (' + confs + '/' + THRESHOLD + ')'}
+        ${isVer ? FH.t('spot_confirmed', 'Community Verified') + ' (' + FH.num(confs) + ')' : FH.t('location_pending', 'Pending') + ' (' + FH.num(confs) + '/' + FH.num(THRESHOLD) + ')'}
       </span>
       ${photoCount > 0 ? `
         <span class="text-slate-600">|</span>
         <span class="text-xs text-slate-400 flex items-center gap-1">
-          <i class="fa-solid fa-camera text-brand"></i> ${photoCount} Photos
+          <i class="fa-solid fa-camera text-brand"></i> ${FH.num(photoCount)} ${FH.t('photos_count', 'Photos')}
         </span>
       ` : ''}
     `;
@@ -146,22 +150,22 @@
             <div class="flex items-center gap-1.5">
               ${isVerified
                 ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
-                     <i class="fa-solid fa-location-dot text-emerald-400"></i> Ground Presence Confirmed
+                     <i class="fa-solid fa-location-dot text-emerald-400"></i> ${FH.t('spot_confirmed', 'Ground Presence Confirmed')}
                    </span>`
                 : `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-950/80 text-amber-300 border border-amber-500/40">
-                     <i class="fa-solid fa-map-pin text-amber-400"></i> Location Verification Pending
+                     <i class="fa-solid fa-map-pin text-amber-400"></i> ${FH.t('location_pending', 'Location Verification Pending')}
                    </span>`
               }
             </div>
             <div class="text-[11px] font-bold text-slate-300 mt-1 flex items-center gap-1">
-              <span>ম্যাপে স্পট উপস্থিতি নিশ্চিতকরণ (Ground Presence)</span>
+              <span>${FH.t('ground_presence_title', 'ম্যাপে স্পট উপস্থিতি নিশ্চিতকরণ (Ground Presence)')}</span>
             </div>
           </div>
           <div class="text-right shrink-0">
             <div class="text-xs font-semibold text-slate-200 font-mono">
               ${isVerified
-                ? `<b class="text-emerald-400 text-sm">${count}</b> <span class="text-slate-400 text-[11px] font-sans font-normal">Confirms (&infin;)</span>`
-                : `<b class="text-amber-400">${count}</b> / ${THRESHOLD} Confirms`
+                ? `<b class="text-emerald-400 text-sm">${FH.num(count)}</b> <span class="text-slate-400 text-[11px] font-sans font-normal">Confirms (&infin;)</span>`
+                : `<b class="text-amber-400">${FH.num(count)}</b> / ${FH.num(THRESHOLD)} Confirms`
               }
             </div>
             <div class="text-[9px] text-slate-400 uppercase font-semibold">Locals Confirmed</div>
@@ -171,14 +175,14 @@
         <!-- Explicit clarification banner: THIS IS NOT A FOOD REVIEW -->
         <div class="bg-blue-950/40 border border-blue-500/30 rounded-xl p-3 text-xs text-blue-200/90 leading-snug space-y-2">
           <div class="font-bold flex items-center justify-between text-blue-300 text-xs">
-            <span class="flex items-center gap-1.5"><i class="fa-solid fa-map-pin text-blue-400"></i> Ground Presence Verification</span>
-            <span class="text-[10px] bg-blue-900/60 border border-blue-400/40 px-2 py-0.5 rounded font-mono">Location Check</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-map-pin text-blue-400"></i> ${FH.t('ground_presence_title', 'Ground Presence Verification')}</span>
+            <span class="text-[10px] bg-blue-900/60 border border-blue-400/40 px-2 py-0.5 rounded font-mono">${FH.t('ground_presence_badge', 'Location Check')}</span>
           </div>
           <div class="p-2.5 rounded-lg bg-[#07192f]/90 border border-blue-500/30 text-slate-200 text-xs italic font-medium leading-relaxed">
-            "Note: This ground confirmation is strictly to state whether the spot is in the 100% correct physical location on the map. It is not a food review."
+            ${FH.t('ground_presence_note')}
           </div>
           <p class="text-[11px] text-slate-300 leading-relaxed">
-            Since any user can pin a roadside cart, at least <b>25 community confirmations</b> are required to prove the cart physically exists here and prevent fake locations.
+            ${FH.t('ground_presence_desc')}
           </p>
         </div>
 
@@ -187,16 +191,16 @@
           <div class="flex items-center justify-between">
             <div>
               <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                <i class="fa-solid fa-award text-amber-400"></i> Ground Presence Rating
+                <i class="fa-solid fa-award text-amber-400"></i> ${FH.t('ground_presence_rating', 'Ground Presence Rating')}
               </span>
-              <span class="text-[10px] text-slate-400 block mt-0.5">ম্যাপে ২৫ জনের কনফার্মেশনের উপর ভিত্তি করে রেটিং বৃদ্ধি পায়</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">${FH.t('ground_rating_sub')}</span>
             </div>
             <div class="text-right">
               <div class="text-base font-black ${isVerified ? 'text-emerald-400' : 'text-amber-400'} font-mono">
-                ${groundScore.toFixed(1)} <span class="text-xs text-slate-400 font-medium font-sans">/ 10.0</span>
+                ${FH.num(groundScore.toFixed(1))} <span class="text-xs text-slate-400 font-medium font-sans">/ ${FH.num('10.0')}</span>
               </div>
               <span class="text-[10px] font-mono px-2 py-0.5 rounded ${isVerified ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/40' : 'bg-amber-950 text-amber-300 border border-amber-500/40'}">
-                ${count}/${THRESHOLD} Confirmed
+                ${FH.num(count)}/${FH.num(THRESHOLD)} Confirmed
               </span>
             </div>
           </div>
@@ -214,8 +218,8 @@
 
         <p class="text-xs text-slate-300 leading-relaxed">
           ${isVerified
-            ? `<i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i><b>স্পটের সত্যতা প্রমাণিত:</b> <b>${count}</b> জন খাদ্যরসিক নিশ্চিত করেছেন যে এই দোকানটি বাস্তবে ঠিক এই স্থানেই রয়েছে। (কোনো সর্বোচ্চ সীমা নেই)`
-            : `<i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>আপনি কি এই স্থানে দোকানটি সশরীরে দেখেছেন? বাস্তবে উপস্থিতি নিশ্চিত করতে নিচে কনফার্ম করুন (আরো <b>${THRESHOLD - count} জন</b> প্রয়োজন)।`
+            ? `<i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i>${FH.t('ground_verified_msg').replace('{count}', `<b>${FH.num(count)}</b>`)}`
+            : `<i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>${FH.t('ground_unverified_msg').replace('{remaining}', `<b>${FH.num(THRESHOLD - count)}</b>`)}`
           }
         </p>
 
@@ -223,10 +227,10 @@
         <div>
           ${hasConfirmed
             ? `<button id="btn-toggle-confirm" type="button" class="w-full rounded-xl bg-[#0f2d52] hover:bg-[#143966] border border-emerald-500/50 text-emerald-300 py-2.5 px-3 text-xs md:text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-[0.98]">
-                 <i class="fa-solid fa-check-double text-emerald-400"></i> আপনি স্পটটির বাস্তব উপস্থিতি নিশ্চিত করেছেন <span class="text-[10px] font-normal underline ml-1 text-emerald-400">(Undo)</span>
+                 <i class="fa-solid fa-check-double text-emerald-400"></i> ${FH.t('confirm_btn_done')}
                </button>`
             : `<button id="btn-toggle-confirm" type="button" class="w-full rounded-xl bg-brand hover:bg-brand-hover text-white py-2.5 px-3 text-xs md:text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-brand/20 transition active:scale-[0.98]">
-                 <i class="fa-solid fa-map-location-dot"></i> ${user ? 'দোকানটি বাস্তবে এখানে আছে — আমি কনফার্ম করছি' : 'লগইন করে স্পটের বাস্তব উপস্থিতি নিশ্চিত করুন'}
+                 <i class="fa-solid fa-map-location-dot"></i> ${user ? FH.t('confirm_btn_action') : FH.t('confirm_btn_login')}
                </button>`
           }
         </div>
@@ -235,11 +239,11 @@
         <div class="bg-[#07192f]/70 border border-[#14355f] rounded-xl p-2.5 flex items-center justify-between text-xs gap-2">
           <div class="text-[11px] text-slate-300 flex items-center gap-1.5">
             <i class="fa-solid fa-utensils text-amber-400"></i>
-            <span>খাবারের স্বাদ ও পরিচ্ছন্নতার আলাদা রিভিউ:</span>
+            <span>${FH.t('separate_review_prompt', 'খাবারের স্বাদ ও পরিচ্ছন্নতার আলাদা রিভিউ:')}</span>
           </div>
           <button id="btn-open-review-from-verif" type="button" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-lg font-bold text-xs shrink-0 inline-flex items-center gap-1.5 transition active:scale-95">
             <i class="fa-solid fa-star text-amber-400"></i>
-            <span>খাবার রিভিউ দিন</span>
+            <span>${FH.t('give_food_review', 'খাবার রিভিউ দিন')}</span>
           </button>
         </div>
 
@@ -324,30 +328,44 @@
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
             <h2 class="font-bold text-lg text-white truncate">${FH.esc(s.name)}</h2>
-            <button id="btn-write-review-header" type="button" class="text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 transition shrink-0 active:scale-95" title="Write a food review">
-              <i class="fa-solid fa-star text-amber-400"></i> Review Food
+            <button id="btn-write-review-header" type="button" class="text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 transition shrink-0 active:scale-95" title="${FH.t('review_food', 'Write a food review')}">
+              <i class="fa-solid fa-star text-amber-400"></i> ${FH.t('review_food', 'Review Food')}
             </button>
             <button id="btn-qr-spot-header" type="button" class="text-xs bg-[#0c233f] hover:bg-[#102d50] text-slate-200 border border-[#1b3d6a] hover:border-brand px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 transition shrink-0" title="Share cart / vendor QR code">
               <i class="fa-solid fa-qrcode"></i> QR
             </button>
             ${canEdit ? `
-              <button id="btn-edit-spot-header" type="button" class="text-xs bg-brand/10 hover:bg-brand/20 text-brand border border-brand/30 px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 transition shrink-0" title="Edit this spot">
-                <i class="fa-solid fa-pen-to-square"></i> Edit
+              <button id="btn-edit-spot-header" type="button" class="text-xs bg-brand/10 hover:bg-brand/20 text-brand border border-brand/30 px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 transition shrink-0" title="${FH.t('edit_spot', 'Edit this spot')}">
+                <i class="fa-solid fa-pen-to-square"></i> ${FH.t('edit_spot', 'Edit')}
               </button>
             ` : ''}
           </div>
-          <p class="text-xs text-slate-400">${FH.esc(s.type)}, ${(s.food || []).map(FH.esc).join(', ')}, ${s.price}</p>
+          <p class="text-xs text-slate-400">${FH.esc(FH.t(s.type, s.type))}, ${(s.food || []).map(f => FH.esc(FH.t(f, f))).join(', ')}, ${s.price}</p>
         </div>
         <button id="dx" type="button" aria-label="Close details" class="text-2xl leading-none px-2 text-slate-400 hover:text-white">&times;</button>
       </div>
       <div class="p-4 space-y-4 text-white">
-        <!-- Route from the visitor's current location -->
-        <button id="btn-directions" type="button" class="w-full flex items-center justify-between gap-2 rounded-xl border border-brand/40 bg-brand/10 hover:bg-brand/20 px-3 py-2.5 text-left transition active:scale-[0.99]" title="Show a route from your location to this cart">
-          <span class="flex items-center gap-2 text-sm font-bold text-brand">
-            <i class="fa-solid fa-diamond-turn-right"></i>
-            <span data-dir-label>Directions from my location</span>
+        <!-- Route from the visitor's current location (Google Maps style) -->
+        <button id="btn-directions" type="button" class="w-full flex items-center justify-between gap-2 rounded-xl border border-brand/40 bg-gradient-to-r from-brand/15 to-[#0c233f] hover:border-brand px-3.5 py-3 text-left transition shadow-md group active:scale-[0.99]" title="Google Maps style directions">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-brand text-white flex items-center justify-center shadow-md shadow-brand/30 group-hover:scale-105 transition">
+              <i class="fa-solid fa-diamond-turn-right text-base"></i>
+            </div>
+            <div>
+              <div class="text-white text-sm font-bold flex items-center gap-2">
+                <span>${FH.t('view_directions', 'গাড়ি ও হাঁটার দিকনির্দেশনা')}</span>
+              </div>
+              <div class="text-[11px] font-medium text-slate-400 flex items-center gap-2 mt-0.5">
+                <span class="text-sky-400"><i class="fa-solid fa-car text-[10px] mr-1"></i>${FH.t('driving_mode', 'গাড়ি')}</span>
+                <span class="text-slate-600">•</span>
+                <span class="text-emerald-400"><i class="fa-solid fa-person-walking text-[10px] mr-1"></i>${FH.t('walking_mode', 'হাঁটা')}</span>
+              </div>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-brand bg-brand/10 border border-brand/30 rounded-lg px-2.5 py-1 flex items-center gap-1 group-hover:bg-brand group-hover:text-white transition">
+            <i class="fa-solid fa-route"></i>
+            <span>${FH.t('directions', 'রুট')}</span>
           </span>
-          <i class="fa-solid fa-chevron-right text-xs text-brand/80"></i>
         </button>
 
         <!-- Interactive 3-5 Photo Gallery -->
@@ -368,7 +386,7 @@
         <!-- Facilities & Services Info (Booking & Delivery) -->
         <div class="space-y-2">
           <div class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-bell-concierge text-brand"></i> Facilities & Services (সুযোগ-সুবিধা)
+            <i class="fa-solid fa-bell-concierge text-brand"></i> ${FH.t('facilities_and_services', 'Facilities & Services (সুযোগ-সুবিধা)')}
           </div>
           <div id="bk"></div>
           <div id="dl"></div>
@@ -427,13 +445,32 @@
     FH.community.feed(s.id);
   }
 
+  window.FH_reopenSelectedModal = function () {
+    const s = FH.store.get(FH.store.S.sel);
+    if (s && $('#detail').classList.contains('open')) {
+      openDetail(s);
+      head(s);
+    }
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
+    if (FH.i18n && typeof FH.i18n.init === 'function') FH.i18n.init();
     if (FH.theme && typeof FH.theme.init === 'function') FH.theme.init();
     FH.map.init();
     if (FH.pwa) FH.pwa.init();
 
     FH.filters.mount($('#filters'));
     $('#list').onclick = e => {
+      const dirBtn = e.target.closest('[data-dir-id]');
+      if (dirBtn) {
+        e.stopPropagation();
+        const spot = FH.store.get(dirBtn.dataset.dirId);
+        if (spot && FH.directions) {
+          FH.store.select(spot.id);
+          FH.directions.open(spot);
+        }
+        return;
+      }
       const b = e.target.closest('[data-id]');
       if (b) FH.store.select(b.dataset.id);
     };

@@ -225,19 +225,67 @@ def seed_database():
     Base.metadata.create_all(engine)
     migrate_legacy_emails()
     with SessionLocal() as db:
-        if db.scalar(select(func.count()).select_from(Cart)):
-            return
         path = ROOT / "data" / "spots.json"
         if not path.exists():
             return
+        existing_carts = {c.id: c for c in db.scalars(select(Cart)).all()}
         for spot in json.loads(path.read_text(encoding="utf-8")):
-            db.add(Cart(id=str(spot["id"]), name=spot.get("name", "Unnamed cart"), description=spot.get("about", ""),
-                        type=spot.get("type", "Food Cart"), cuisines=spot.get("food", []), lat=spot["lat"], lng=spot["lng"],
-                        address=spot.get("address", ""), phone=spot.get("phone", ""), price=spot.get("price", "৳"),
-                        photos=spot.get("photos", []), status=spot.get("status", "open"), rating=spot.get("rating", 0),
-                        review_count=spot.get("reviews", 0), hygiene_rating=spot.get("hygiene"), delivery=spot.get("delivery", "none"),
-                        has_booking=spot.get("hasBooking", False)))
+            spot_id = str(spot["id"])
+            if spot_id not in existing_carts:
+                db.add(Cart(
+                    id=spot_id,
+                    name=spot.get("name", "Unnamed cart"),
+                    description=spot.get("about", ""),
+                    type=spot.get("type", "Food Cart"),
+                    cuisines=spot.get("food", []),
+                    lat=spot["lat"],
+                    lng=spot["lng"],
+                    address=spot.get("address", ""),
+                    phone=spot.get("phone", ""),
+                    price=spot.get("price", "৳"),
+                    photos=spot.get("photos", []),
+                    status=spot.get("status", "open"),
+                    rating=spot.get("rating", 0),
+                    review_count=spot.get("reviews", 0),
+                    hygiene_rating=spot.get("hygiene"),
+                    delivery=spot.get("delivery", "none"),
+                    has_booking=spot.get("hasBooking", False),
+                ))
+            else:
+                c = existing_carts[spot_id]
+                if not c.vendor_user_id:
+                    c.name = spot.get("name", c.name)
+                    c.description = spot.get("about", c.description)
+                    c.type = spot.get("type", c.type)
+                    c.cuisines = spot.get("food", c.cuisines)
+                    c.lat = spot.get("lat", c.lat)
+                    c.lng = spot.get("lng", c.lng)
+                    c.address = spot.get("address", c.address)
+                    c.phone = spot.get("phone", c.phone)
+                    c.price = spot.get("price", c.price)
+                    c.photos = spot.get("photos", c.photos)
+                    c.rating = spot.get("rating", c.rating)
+                    c.review_count = spot.get("reviews", c.review_count)
+                    c.hygiene_rating = spot.get("hygiene", c.hygiene_rating)
+                    c.has_booking = spot.get("hasBooking", c.has_booking)
         db.commit()
+
+        # Seed sample reviews if empty
+        if not db.scalar(select(func.count()).select_from(Review)):
+            sample_reviews = [
+                ("s1", "Tanvir Ahmed", 5.0, 5.0, "Sultan's Dine mutton kacchi is unmatched in Dhaka! Meat was melting off the bone, aromatic rice and the borhani was chilled and thick."),
+                ("s1", "Farhana Islam", 4.5, 4.5, "Best wedding style kacchi in town. Great hygiene and polite staff."),
+                ("s3", "Sabbir Hossain", 5.0, 4.0, "Star Kabab's mutton leg roast and fresh butter naan is pure comfort food. Always a pleasure visiting here."),
+                ("s4", "Nafis Fuad", 4.5, 5.0, "Takeout's Beef Cheese Delight is still the standard for gourmet burgers in Dhaka. Super juicy patty!"),
+                ("s10", "Ayesha Siddiqua", 5.0, 5.0, "Peri-Peri chicken at Nando's was full of flavor and the place is spotless!"),
+                ("s23", "Rakibul Hasan", 5.0, 4.0, "Haji Biryani is an emotion. Mustard oil tehari with fresh green chilies in Nazira Bazar."),
+                ("s25", "Mahmudul Haque", 5.0, 4.5, "Beauty Lassi and royal faluda are legendary since 1922. A must-visit in Old Dhaka!"),
+                ("s30", "Zubair Rahman", 4.5, 4.0, "Star Kabab Uttara is our family go-to for weekend dinner. Delicious seekh kababs."),
+                ("s40", "Kamrul Islam", 5.0, 4.0, "Neel Pori duck curry at 300 feet is bursting with chui jhal flavors. Great open-air highway experience.")
+            ]
+            for cid, author, overall, hygiene, comment in sample_reviews:
+                db.add(Review(cart_id=cid, author_name=author, overall=overall, hygiene=hygiene, comment=comment))
+            db.commit()
 
 
 @asynccontextmanager

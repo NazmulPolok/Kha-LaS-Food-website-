@@ -20,19 +20,15 @@
   if (window.caches) caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))));
   if (navigator.serviceWorker) navigator.serviceWorker.getRegistrations().then(regs => Promise.all(regs.map(r => r.unregister())));
 </script>
-<link rel="stylesheet" href="assets/css/styles.css?v=8">
-<link rel="stylesheet" href="assets/css/ad-wall.css?v=2">
+<link rel="stylesheet" href="assets/css/styles.css?v=50">
+<link rel="stylesheet" href="assets/css/ad-wall.css?v=50">
 </head>
 <body class="h-screen flex flex-col overflow-hidden bg-[#07192f] text-slate-100 selection:bg-brand selection:text-white" data-theme="dark">
 <header class="bg-[#07192f] border-b border-[#14355f] px-3 md:px-4 py-2 flex items-center justify-between gap-2.5 md:gap-3 shadow-md z-20">
   <div class="flex items-center gap-2 md:gap-3">
-    <!-- 3-line Hamburger Menu Button matching uploaded image -->
+    <!-- 3-line Hamburger Menu Button -->
     <button id="btn-sidebar-toggle" type="button" class="w-9 h-9 rounded-xl flex items-center justify-center border border-[#14355f] bg-[#0c233f] text-white hover:text-brand hover:border-brand transition shadow-sm" title="Toggle Spots Sidebar" aria-label="Toggle Spots Sidebar" aria-expanded="false">
-      <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="currentColor">
-        <rect x="2.5" y="4" width="19" height="3" rx="1.5" />
-        <rect x="2.5" y="10.5" width="19" height="3" rx="1.5" />
-        <rect x="2.5" y="17" width="19" height="3" rx="1.5" />
-      </svg>
+      <i class="fa-solid fa-bars text-sm pointer-events-none"></i>
     </button>
 
     <div class="flex items-center gap-2 cursor-pointer group" onclick="location.reload()">
@@ -41,28 +37,34 @@
       </div>
       <div>
         <h1 class="font-black text-xl md:text-2xl leading-tight text-white tracking-tight">খাLaS</h1>
-        <p class="text-[10px] md:text-[11px] text-slate-400 -mt-0.5 hidden sm:block font-medium">খাবারের খোঁজ? ব্যস, খাLaS!</p>
+        <p id="header-subtitle" data-i18n="tagline" class="text-[10px] md:text-[11px] text-slate-400 -mt-0.5 hidden sm:block font-medium">খাবারের খোঁজ? ব্যস, খাLaS!</p>
       </div>
     </div>
   </div>
 
   <div class="flex items-center gap-2 md:gap-3">
+    <!-- Language Switcher (বাংলা / English) -->
+    <button id="btn-lang-toggle" type="button" onclick="FH.i18n.toggle()" class="flex items-center gap-1.5 border border-[#14355f] bg-[#0c233f] text-slate-200 hover:text-brand hover:border-brand text-xs font-semibold px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl transition shadow-sm" title="Change Language (বাংলা / English)" aria-label="Change Language">
+      <span id="lang-toggle-icon"><i class="fa-solid fa-globe text-brand"></i></span>
+      <span id="lang-toggle-text" class="font-bold">EN</span>
+    </button>
+
     <!-- Light & Dark Mode Toggle Switcher -->
     <button id="btn-theme-toggle" type="button" class="flex items-center gap-1.5 border border-[#14355f] bg-[#0c233f] text-slate-200 hover:text-brand hover:border-brand text-xs font-semibold px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl transition shadow-sm" title="Switch Theme (Dark / Light)" aria-label="Switch Theme">
-      <span id="theme-toggle-icon">🌙</span>
+      <span id="theme-toggle-icon"><i class="fa-solid fa-moon text-amber-400"></i></span>
       <span id="theme-toggle-text" class="hidden sm:inline">Dark</span>
     </button>
 
     <!-- Free Ad Wall Button -->
     <button id="btn-promo-wall" type="button" onclick="FH.adWall.openPromoWall()" class="flex items-center gap-1.5 border border-[#14355f] bg-[#0c233f] text-slate-200 hover:text-brand hover:border-brand text-xs font-semibold px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl transition shadow-sm" title="Open 24-Hour Free Ad Wall & Promo Board">
       <i class="fa-solid fa-fire-flame-curved text-brand"></i>
-      <span class="font-bold">Free Ad Wall</span>
+      <span class="font-bold" data-i18n="ad_wall">Free Ad Wall</span>
       <span class="bg-brand text-white keep-white px-1.5 py-0.2 rounded-full text-[10px] font-bold">24h</span>
     </button>
 
     <button id="btn-add-spot" type="button" title="Add a new food spot" class="flex items-center gap-1.5 bg-brand hover:bg-brand-hover active:scale-95 text-white keep-white text-xs md:text-sm font-bold px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl shadow-lg shadow-brand/25 transition">
       <i class="fa-solid fa-plus-circle"></i>
-      <span>Add Spot</span>
+      <span data-i18n="add_spot">Add Spot</span>
     </button>
 
     <div id="auth-header" class="flex items-center"></div>
@@ -81,8 +83,8 @@
         <span><i class="fa-solid fa-circle" style="color:#eab308"></i> 5.5+</span>
         <span><i class="fa-solid fa-circle" style="color:#f04e37"></i> &lt;5.5</span>
       </div>
-      <div class="text-[11px] text-emerald-400 font-semibold" title="ম্যাপে চিহ্নিত স্থানে দোকানটি বাস্তবে বিদ্যমান কি না তা ২৫+ জন স্থানীয় ব্যবহারকারী নিশ্চিত করেছেন (Physical Presence Confirmed, Not a Food Review)">
-        <i class="fa-solid fa-location-dot text-emerald-400"></i> ২৫+ = স্পট নিশ্চিত (Presence)
+      <div id="presence-legend" class="text-[11px] text-emerald-400 font-semibold" title="ম্যাপে চিহ্নিত স্থানে দোকানটি বাস্তবে বিদ্যমান কি না তা ২৫+ জন স্থানীয় ব্যবহারকারী নিশ্চিত করেছেন (Physical Presence Confirmed, Not a Food Review)">
+        <i class="fa-solid fa-location-dot text-emerald-400"></i> <span data-i18n="presence_legend">২৫+ = স্পট নিশ্চিত (উপস্থিতি)</span>
       </div>
     </div>
     <ul id="list" class="space-y-2"></ul>
@@ -91,12 +93,8 @@
   <section class="order-1 md:order-2 flex-1 min-h-0 relative" style="min-height: 300px;">
     <!-- Floating Quick Unhide Button on Map -->
     <button id="btn-floating-sidebar" type="button" class="absolute top-3 left-3 z-[1000] flex items-center gap-2 bg-[#0c233f] border border-[#14355f] text-white hover:text-brand hover:border-brand px-3 py-2 rounded-xl text-xs font-bold shadow-2xl transition active:scale-95 group" title="Toggle Spots Panel">
-      <svg class="w-4 h-4 text-brand pointer-events-none group-hover:scale-110 transition" viewBox="0 0 24 24" fill="currentColor">
-        <rect x="2.5" y="4" width="19" height="3" rx="1.5" />
-        <rect x="2.5" y="10.5" width="19" height="3" rx="1.5" />
-        <rect x="2.5" y="17" width="19" height="3" rx="1.5" />
-      </svg>
-      <span id="floating-btn-label">Show Food Spots</span>
+      <i class="fa-solid fa-bars-staggered text-brand text-sm group-hover:scale-110 transition-transform"></i>
+      <span id="floating-btn-label" data-i18n="show_spots">Show Food Spots</span>
       <span id="floating-count-badge" class="bg-brand text-white keep-white px-1.5 py-0.2 rounded-full text-[10px] ml-0.5"></span>
     </button>
 
@@ -104,32 +102,114 @@
     <div id="map-actions" class="absolute bottom-5 right-3 z-[1000] flex flex-col items-end gap-2">
       <button id="btn-find-near" type="button" class="flex items-center gap-2 bg-[#0c233f] border border-[#14355f] text-white hover:text-brand hover:border-brand px-3 py-2.5 rounded-xl text-xs font-bold shadow-2xl transition active:scale-95 disabled:cursor-wait" title="Find food carts near my current location">
         <i class="fa-solid fa-crosshairs text-brand"></i>
-        <span data-near-label>Find Near Me</span>
+        <span data-near-label data-i18n="find_near_me">Find Near Me</span>
       </button>
       <button id="btn-quick-add" type="button" class="flex items-center gap-2 bg-brand hover:bg-brand-hover text-white keep-white px-3 py-2.5 rounded-xl text-xs font-bold shadow-2xl shadow-brand/25 transition active:scale-95" title="Add a newly discovered roadside cart">
         <i class="fa-solid fa-plus-circle"></i>
-        <span>Add Cart</span>
+        <span data-i18n="add_cart">Add Cart</span>
       </button>
     </div>
 
     <div id="map" class="absolute inset-0" role="application" aria-label="Food map"></div>
 
-    <!-- Route summary: shown after "Directions from my location" -->
-    <div id="route-panel" class="hidden absolute top-20 left-3 z-[1000] w-[calc(100%-1.5rem)] max-w-[300px] bg-[#0c233f] border border-[#14355f] rounded-xl shadow-2xl p-3 space-y-2" role="status" aria-live="polite">
-      <div class="flex items-start justify-between gap-2">
-        <div class="min-w-0">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <i class="fa-solid fa-diamond-turn-right text-brand"></i> Directions
-          </div>
-          <h3 id="route-title" class="text-sm font-bold text-white truncate">Route</h3>
+    <!-- Google Maps-style Directions & Live Route Navigation Panel -->
+    <div id="route-panel" class="hidden absolute top-4 left-3 md:left-6 z-[1000] w-[calc(100%-1.5rem)] max-w-[370px] bg-[#0c233f]/95 backdrop-blur-md border border-[#1b4376] rounded-2xl shadow-2xl overflow-hidden transition-all duration-200" role="region" aria-label="Directions and Route Navigation">
+      <!-- Mode Tabs & Close Header -->
+      <div class="bg-[#07192f] border-b border-[#14355f] px-3 py-2 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-1 bg-[#0c233f] p-1 rounded-xl border border-[#14355f]">
+          <button id="route-mode-driving" type="button" class="route-mode-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition bg-brand text-white shadow-sm" data-mode="driving" title="Driving Route">
+            <i class="fa-solid fa-car"></i>
+            <span data-i18n="driving_mode">গাড়ি (Driving)</span>
+          </button>
+          <button id="route-mode-walking" type="button" class="route-mode-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white" data-mode="walking" title="Walking Route">
+            <i class="fa-solid fa-person-walking"></i>
+            <span data-i18n="walking_mode">হাঁটা (Walking)</span>
+          </button>
         </div>
-        <button id="route-close" type="button" class="text-slate-400 hover:text-white text-xl leading-none px-1 -mt-0.5" aria-label="Close directions" title="Clear route">&times;</button>
+        <button id="route-close" type="button" class="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition" aria-label="Close directions" title="দিকনির্দেশ বন্ধ করুন">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
       </div>
-      <div id="route-summary" class="text-xs font-bold text-emerald-300"></div>
-      <p id="route-note" class="text-[10px] text-slate-500 leading-snug"></p>
-      <a id="route-google" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand hover:text-brand-hover">
-        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Open turn-by-turn in Google Maps
-      </a>
+
+      <!-- Origins and Destination Planner Box -->
+      <div class="p-3 space-y-2.5 border-b border-[#14355f]/80 bg-[#0c233f]/60">
+        <!-- Origin (A) -->
+        <div class="flex items-center gap-2.5">
+          <div class="flex flex-col items-center">
+            <div class="w-3.5 h-3.5 rounded-full border-2 border-sky-400 bg-transparent flex items-center justify-center">
+              <div class="w-1.5 h-1.5 rounded-full bg-sky-400"></div>
+            </div>
+            <div class="w-0.5 h-4 bg-slate-600 my-0.5"></div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <label class="sr-only" for="route-origin-select">Choose Starting Point</label>
+            <select id="route-origin-select" class="w-full bg-[#07192f] text-slate-200 text-xs font-medium rounded-lg border border-[#1b4376] px-2.5 py-1.5 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand">
+              <option value="gps">📍 আমার বর্তমান লোকেশন (GPS)</option>
+              <option value="dhanmondi">ধানমন্ডি ২৭ (Dhanmondi)</option>
+              <option value="gulshan">গুলশান-২ সার্কেল (Gulshan-2)</option>
+              <option value="banani">বনানী ১১ (Banani)</option>
+              <option value="uttara">উত্তরা সেক্টর ৩ (Uttara)</option>
+              <option value="old_dhaka">পুরান ঢাকা - নাজিরা বাজার (Old Dhaka)</option>
+              <option value="mirpur">মিরপুর-১০ গোলচত্বর (Mirpur-10)</option>
+              <option value="shahbagh">শাহবাগ চত্বর (Shahbagh)</option>
+              <option value="khilgaon">খিলগাঁও তালতলা (Khilgaon)</option>
+              <option value="bashundhara">বসুন্ধরা গেট (Bashundhara)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Destination (B) -->
+        <div class="flex items-center gap-2.5">
+          <div class="w-3.5 flex items-center justify-center">
+            <i class="fa-solid fa-location-dot text-rose-500 text-sm"></i>
+          </div>
+          <div class="flex-1 min-w-0 bg-[#07192f] text-white text-xs font-bold rounded-lg border border-[#1b4376] px-2.5 py-1.5 truncate flex items-center gap-2">
+            <span class="text-rose-400 text-[10px] font-extrabold uppercase" data-i18n="destination_label">গন্তব্য:</span>
+            <span id="route-dest-name" class="truncate">রেস্টুরেন্ট</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Route Primary Stats (ETA, Distance, Route description) -->
+      <div id="route-stats" class="p-3 space-y-1.5">
+        <div class="flex items-baseline justify-between gap-2">
+          <div class="flex items-baseline gap-2">
+            <span id="route-eta" class="text-2xl font-black text-emerald-400 tracking-tight">--</span>
+            <span id="route-distance" class="text-sm font-semibold text-slate-300">(--)</span>
+          </div>
+          <span id="route-mode-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            <i class="fa-solid fa-car mr-1"></i> ড্রাইভিং
+          </span>
+        </div>
+        <div class="text-[11px] text-slate-400 flex items-center gap-1.5">
+          <i class="fa-solid fa-shield-halved text-emerald-400 text-[10px]"></i>
+          <span id="route-tagline" data-i18n="fastest_route">সবচেয়ে দ্রুত ও সুবিধাজনক রুট</span>
+        </div>
+      </div>
+
+      <!-- Collapsible Turn-by-Turn Steps Accordion -->
+      <div class="border-t border-[#14355f] bg-[#07192f]/60">
+        <button id="route-steps-toggle" type="button" class="w-full px-3 py-2 flex items-center justify-between text-left text-xs font-bold text-slate-200 hover:text-white hover:bg-slate-800/40 transition">
+          <span class="flex items-center gap-2">
+            <i class="fa-solid fa-route text-brand"></i>
+            <span data-i18n="turn_by_turn">ধাপে ধাপে দিকনির্দেশনা</span>
+            <span id="route-steps-count" class="px-1.5 py-0.2 rounded text-[10px] bg-slate-700/80 text-slate-300 font-mono">0</span>
+          </span>
+          <i id="route-steps-chevron" class="fa-solid fa-chevron-down text-slate-400 text-[11px] transition-transform duration-200"></i>
+        </button>
+
+        <div id="route-steps-list" class="hidden max-h-48 overflow-y-auto divide-y divide-[#14355f]/60 px-3 py-1 text-xs">
+          <!-- Step items rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Footer Action: Open / Start in Google Maps -->
+      <div class="p-2.5 bg-[#07192f] border-t border-[#14355f] flex items-center gap-2">
+        <a id="route-google" href="#" target="_blank" rel="noopener" class="flex-1 flex items-center justify-center gap-2 bg-[#1a73e8] hover:bg-[#1557b0] text-white text-xs font-bold py-2 px-3 rounded-xl transition shadow">
+          <i class="fa-solid fa-diamond-turn-right text-sm"></i>
+          <span data-i18n="open_gmaps">গুগল ম্যাপে শুরু করুন</span>
+        </a>
+      </div>
     </div>
   </section>
 </main>
@@ -270,26 +350,27 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="assets/js/config.js"></script>
-<script src="assets/js/store.js"></script>
-<script src="assets/js/db.js?v=2"></script>
-<script src="assets/js/map-engine.js?v=4"></script>
-<script src="assets/js/theme.js"></script>
-<script src="assets/js/auth.js?v=2"></script>
-<script src="assets/js/map.js?v=5"></script>
-<script src="assets/js/directions.js?v=3"></script>
-<script src="assets/js/filters.js"></script>
-<script src="assets/js/booking.js"></script>
-<script src="assets/js/delivery.js"></script>
-<script src="assets/js/community.js"></script>
-<script src="assets/js/gallery.js"></script>
-<script src="assets/js/status.js?v=2"></script>
-<script src="assets/js/reviews.js?v=7"></script>
-<script src="assets/js/qr.js"></script>
-<script src="assets/js/crowdsource.js?v=7"></script>
-<script src="assets/js/pwa.js?v=20"></script>
-<script src="assets/js/spot-modal.js?v=8"></script>
-<script src="assets/js/ad-wall.js?v=2"></script>
-<script src="assets/js/app.js?v=11"></script>
+<script src="assets/js/config.js?v=51"></script>
+<script src="assets/js/i18n.js?v=51"></script>
+<script src="assets/js/store.js?v=51"></script>
+<script src="assets/js/db.js?v=51"></script>
+<script src="assets/js/map-engine.js?v=51"></script>
+<script src="assets/js/theme.js?v=51"></script>
+<script src="assets/js/auth.js?v=51"></script>
+<script src="assets/js/map.js?v=51"></script>
+<script src="assets/js/directions.js?v=51"></script>
+<script src="assets/js/filters.js?v=51"></script>
+<script src="assets/js/booking.js?v=51"></script>
+<script src="assets/js/delivery.js?v=51"></script>
+<script src="assets/js/community.js?v=51"></script>
+<script src="assets/js/gallery.js?v=51"></script>
+<script src="assets/js/status.js?v=51"></script>
+<script src="assets/js/reviews.js?v=51"></script>
+<script src="assets/js/qr.js?v=51"></script>
+<script src="assets/js/crowdsource.js?v=51"></script>
+<script src="assets/js/pwa.js?v=51"></script>
+<script src="assets/js/spot-modal.js?v=51"></script>
+<script src="assets/js/ad-wall.js?v=51"></script>
+<script src="assets/js/app.js?v=51"></script>
 </body>
 </html>

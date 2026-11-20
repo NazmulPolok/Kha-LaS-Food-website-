@@ -2,14 +2,40 @@
   const cfg = window.FH_CONFIG || {};
   const $ = (s) => document.querySelector(s);
 
-  const ICON = {
-    'Street Food': 'fa-burger',
-    'Food Cart': 'fa-cart-shopping',
-    Rooftop: 'fa-building',
-    Cafe: 'fa-mug-hot',
-    'Fine Dining': 'fa-champagne-glasses',
-    Buffet: 'fa-plate-wheat'
-  };
+  function getSpotIcon(spot) {
+    const cuisines = (spot.food || []).map(f => String(f).toLowerCase());
+    const type = String(spot.type || '').toLowerCase();
+    const name = String(spot.name || '').toLowerCase();
+
+    if (cuisines.some(c => c.includes('biryani') || c.includes('kacchi')) || name.includes('kacchi') || name.includes('biryani')) {
+      return 'fa-bowl-rice';
+    }
+    if (cuisines.some(c => c.includes('kabab') || c.includes('bbq') || c.includes('grill') || c.includes('chaap')) || name.includes('kabab') || name.includes('chaap')) {
+      return 'fa-fire-burner';
+    }
+    if (cuisines.some(c => c.includes('burger') || c.includes('fast food') || c.includes('pizza')) || name.includes('burger') || name.includes('chillox') || name.includes('takeout')) {
+      return 'fa-burger';
+    }
+    if (type.includes('cafe') || cuisines.some(c => c.includes('cafe') || c.includes('coffee') || c.includes('tea')) || name.includes('cafe') || name.includes('coffee') || name.includes('tea')) {
+      return 'fa-mug-hot';
+    }
+    if (cuisines.some(c => c.includes('chinese') || c.includes('thai') || c.includes('asian') || c.includes('malay'))) {
+      return 'fa-bowl-food';
+    }
+    if (type.includes('fine dining')) {
+      return 'fa-wine-glass';
+    }
+    if (type.includes('buffet')) {
+      return 'fa-plate-wheat';
+    }
+    if (type.includes('rooftop')) {
+      return 'fa-cloud-sun';
+    }
+    if (type.includes('cart') || type.includes('street')) {
+      return 'fa-store';
+    }
+    return 'fa-utensils';
+  }
 
   let api = null;
   let readyPromise = null;
@@ -165,16 +191,19 @@
         const color = score > 0 ? FH.scoreColor(score) : '#64748b';
         const closed = spot.status === 'closed';
         const scoreLabel = score > 0 ? score.toFixed(1) : 'NEW';
+        const iconClass = getSpotIcon(spot);
         const html = `
-          <div class="fh-pin ${selected ? 'sel' : ''} ${!isVerified ? 'unverified-pin' : ''} ${closed ? 'is-closed' : ''}"
-               style="background:${color}"
+          <div class="fh-map-pin ${selected ? 'is-selected' : ''} ${!isVerified ? 'unverified-pin' : ''} ${closed ? 'is-closed' : ''}"
                title="${escapeHtml(spot.name)} — ${closed ? 'Closed' : 'Open'}${score > 0 ? ' · ' + score.toFixed(1) + '/10' : ''}">
-            <i class="fa-solid ${ICON[spot.type] || 'fa-utensils'}"></i>
-            <b>${scoreLabel}</b>
-            ${isVerified
-              ? '<i class="fa-solid fa-circle-check text-[10px] text-white ml-0.5" title="Community verified"></i>'
-              : `<i class="fa-regular fa-clock text-[10px] text-amber-200 ml-0.5" title="Pending verification (${confirmations}/${threshold})"></i>`}
-            <span class="fh-pin-status ${closed ? 'closed' : 'open'}" title="${closed ? 'Closed' : 'Open'}"></span>
+            <div class="fh-pin-body" style="background:${color};">
+              <span class="fh-pin-icon-wrap"><i class="fa-solid ${iconClass}"></i></span>
+              <span class="fh-pin-score">${scoreLabel}</span>
+              ${isVerified
+                ? '<span class="fh-pin-badge verified" title="Community verified"><i class="fa-solid fa-check"></i></span>'
+                : `<i class="fa-regular fa-clock text-[9px] text-amber-200 ml-0.5" title="Pending verification (${confirmations}/${threshold})"></i>`}
+              <span class="fh-pin-status-dot ${closed ? 'closed' : 'open'}" title="${closed ? 'Closed' : 'Open'}"></span>
+            </div>
+            <div class="fh-pin-stem" style="border-top-color:${color};"></div>
           </div>`;
 
         markers.push(api.addMarker({
@@ -183,7 +212,7 @@
           html,
           title: `${spot.name} — ${closed ? 'Closed' : 'Open'}`,
           className: selected ? 'is-selected' : '',
-          iconSize: [96, 32],
+          iconSize: [84, 36],
           anchor: 'bottom',
           onClick: () => {
             if (pickCallback) return;
